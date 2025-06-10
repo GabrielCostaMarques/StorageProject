@@ -11,15 +11,14 @@ namespace StorageProject.Domain.Entity
 
         public Category() { }
 
-        public Category(Guid id, string name, string? description)
+        public Category(string name, string? description)
         {
-            Id = id;
             Name = name;
             Description = description;
         }
-        public Category(Guid id, string name)
+        public Category(string name)
         {
-            Id = id;
+
             Name = name;
         }
     }

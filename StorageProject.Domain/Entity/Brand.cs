@@ -1,7 +1,6 @@
 ﻿using StorageProject.Domain.Abstractions;
-using StorageProject.Domain.Entity;
 
-namespace StorageProject.Domain.Entities
+namespace StorageProject.Domain.Entity
 {
     public class Brand : EntityBase
     {
@@ -11,9 +10,8 @@ namespace StorageProject.Domain.Entities
 
         public Brand() { }
 
-        public Brand(Guid id, string name)
+        public Brand(string name)
         {
-            Id = id;
             Name = name;
         }
     }

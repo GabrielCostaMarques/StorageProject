@@ -17,18 +17,18 @@ namespace StorageProject.Domain.Entity
 
         public Product() { }
 
-        public Product(Guid id, string name, string? description, Brand brand, Category category)
+        public Product(string name, string? description, Brand brand, Category category)
         {
-            Id = id;
+
             Name = name;
             Description = description;
             Brand = brand;
             Category = category;
         }
 
-        public Product(Guid id, string name, Brand brand, Category category)
+        public Product(string name, Brand brand, Category category)
         {
-            Id = id;
+
             Name = name;
             Brand = brand;
             Category = category;
