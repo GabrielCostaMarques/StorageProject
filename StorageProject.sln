@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageProject.Domain", "St
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageProject.Application", "StorageProject.Application\StorageProject.Application.csproj", "{18E0917A-BFC7-4126-AC55-FEAAA6D49641}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageProject.Infrasctructure", "StorageProject.Infrasctructure\StorageProject.Infrasctructure.csproj", "{D42DCE47-39BC-4E51-BCBA-5485A938BFDD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageProject.Infrastructure", "StorageProject.Infrasctructure\StorageProject.Infrastructure.csproj", "{D42DCE47-39BC-4E51-BCBA-5485A938BFDD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageProject.Api", "StorageProject.Api\StorageProject.Api.csproj", "{C640383A-E020-4695-8B9D-E6A3D920756D}"
 EndProject

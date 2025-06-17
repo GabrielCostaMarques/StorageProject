@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using StorageProject.Domain.Contracts;
+using StorageProject.Infrasctructure.Data;
+using StorageProject.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +11,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var connectionString = builder.Configuration.GetConnectionString("StorageContext");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+        .EnableDetailedErrors()
+        .EnableSensitiveDataLogging());
+
+
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 

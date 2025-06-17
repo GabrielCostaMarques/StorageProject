@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StorageProject.Domain.Abstractions;
-using StorageProject.Domain.Repositories.Contracts;
+using StorageProject.Domain.Contracts;
+using StorageProject.Infrasctructure.Data;
 
-namespace StorageProject.Domain.Repositories
+namespace StorageProject.Infrastructure.Repositories
 {
-    public abstract class Repository<T>(DbContext context) : IRepository<T> where T : EntityBase
+    public abstract class Repository<T>(AppDbContext context) : IRepository<T> where T : EntityBase
     {
 
         private readonly DbSet<T> _dbSet = context.Set<T>();
@@ -25,7 +26,7 @@ namespace StorageProject.Domain.Repositories
             return entity;
         }
 
-        public async Task<List<T>?> GetAllAsync(int skip = 0, int take = 40, CancellationToken cancellationToken = default)
+        public async Task<ICollection<T>?> GetAllAsync(int skip = 0, int take = 40, CancellationToken cancellationToken = default)
         => await _dbSet
                  .AsNoTracking()
                  .Skip(skip)
