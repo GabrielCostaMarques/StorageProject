@@ -11,7 +11,7 @@ namespace StorageProject.Infrastructure.Data
         {
 
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            var connectionString = "server=localhost;port=3306;database=dev;user=developer;password=Lagavi30!;"; // ajuste aqui
+            var connectionString = "server=localhost;port=3306;database=dev;user=developer;password=Lagavi3003!;"; // ajuste aqui
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 
             return new AppDbContext(optionsBuilder.Options);
