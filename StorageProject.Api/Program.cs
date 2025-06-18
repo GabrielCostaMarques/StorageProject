@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using StorageProject.Application.Contracts;
+using StorageProject.Application.Services;
 using StorageProject.Domain.Contracts;
 using StorageProject.Infrasctructure.Data;
 using StorageProject.Infrastructure.Repositories;
@@ -20,8 +22,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         .EnableSensitiveDataLogging());
 
 
-
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 

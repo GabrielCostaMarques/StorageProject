@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StorageProject.Application\StorageProject.Application.csproj" />
     <ProjectReference Include="..\StorageProject.Infrastructure\StorageProject.Infrastructure.csproj" />
   </ItemGroup>
 

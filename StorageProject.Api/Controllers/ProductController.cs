@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StorageProject.Application.Contracts;
+using StorageProject.Application.DTOs;
+using StorageProject.Application.Services;
 using StorageProject.Domain.Contracts;
 
 namespace StorageProject.Api.Controllers
@@ -9,17 +12,17 @@ namespace StorageProject.Api.Controllers
     public class ProductController : Controller
     {
         
-        private readonly IProductRepository _productRepository;
+        private readonly IProductService _productService;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductService productService)
         {
-            _productRepository = productRepository;
+            _productService = productService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> Get()
         {
-            var product = await _productRepository.GetAllAsync();
+            var product = await _productService.GetAllAsync();
 
             if (!product.Any())
             {
@@ -27,6 +30,13 @@ namespace StorageProject.Api.Controllers
             }
 
             return  Ok(product);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] ProductDTO productDTO)
+        {
+            var product = await _productService.CreateAsync(productDTO);
+            return Ok(product);
         }
     }
 }
