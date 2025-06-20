@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs;
-using StorageProject.Application.Services;
-using StorageProject.Domain.Contracts;
 
 namespace StorageProject.Api.Controllers
 {
@@ -37,6 +35,14 @@ namespace StorageProject.Api.Controllers
         {
             var product = await _productService.CreateAsync(productDTO);
             return Ok(product);
+        }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _productService.RemoveAsync(id);
+            return Ok();
         }
     }
 }

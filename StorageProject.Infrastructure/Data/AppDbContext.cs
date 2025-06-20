@@ -13,5 +13,13 @@ namespace StorageProject.Infrasctructure.Data
         public DbSet<Brand> Brands{ get; set; }
         public DbSet<Category> Categories{ get; set; }
 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Status)
+                .HasConversion<string>();
+        }
+
     }
 }

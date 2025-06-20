@@ -13,15 +13,12 @@ namespace StorageProject.Infrastructure.Repositories
         public async Task<T> Create(T entity, CancellationToken cancellationToken = default)
         {
             await _dbSet.AddAsync(entity, cancellationToken);
-
             return entity;
         }
 
-        public async Task<T> Delete(T entity, CancellationToken cancellationToken = default)
+        public void Delete(T entity, CancellationToken cancellationToken = default)
         {
-            _dbSet.Remove(entity);
-
-            return entity;
+             _dbSet.Remove(entity);
         }
 
         public async Task<ICollection<T>?> GetAll(int skip = 0, int take = 40, CancellationToken cancellationToken = default)
@@ -32,13 +29,12 @@ namespace StorageProject.Infrastructure.Repositories
                  .ToListAsync(cancellationToken);
 
         public async Task<T?> GetById(Guid id, CancellationToken cancellationToken = default)
-        => await _dbSet.FindAsync(id, cancellationToken);
+        => await _dbSet.FirstOrDefaultAsync(e=>e.Id == id, cancellationToken);
 
 
-        public async Task<T> Update(T entity, CancellationToken cancellationToken = default)
+        public void Update(T entity, CancellationToken cancellationToken = default)
         {
             _dbSet.Update(entity);
-            return entity;
         }
     }
 }

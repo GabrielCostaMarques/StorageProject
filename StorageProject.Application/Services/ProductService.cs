@@ -17,8 +17,7 @@ namespace StorageProject.Application.Services
 
         public async Task<ICollection<Product>> GetAllAsync()
         {
-           var products= await _unitOfWork.ProductRepository.GetAll();
-           return products;
+            return await _unitOfWork.ProductRepository.GetAll();
         }
 
         public async Task<Product> CreateAsync(ProductDTO productDTO)
@@ -30,7 +29,6 @@ namespace StorageProject.Application.Services
                 Quantity = productDTO.Quantity,
                 BrandId = productDTO.BrandId,
                 CategoryId = productDTO.CategoryId,
-
             };
 
             await _unitOfWork.ProductRepository.Create(entity);
@@ -48,9 +46,16 @@ namespace StorageProject.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task RemoveAsync(Guid id)
+        public async Task RemoveAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var product = await _unitOfWork.ProductRepository.GetById(id);
+
+            if (product is null)
+                throw new Exception("Produto não encontrado");
+
+            _unitOfWork.ProductRepository.Delete(product);
+
+            await _unitOfWork.CommitAsync();
         }
 
         public void Dispose()
@@ -58,6 +63,6 @@ namespace StorageProject.Application.Services
             _unitOfWork.Dispose();
         }
 
-        
+
     }
 }

@@ -3,6 +3,6 @@
    public abstract class EntityBase
     {
         public Guid Id { get; set; }
-        public DateTime DataCriacao { get; protected internal set; }
+        public DateTime DataCriacao { get; protected internal set; } = DateTime.UtcNow;
     }
 }
