@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using StorageProject.Application.Contracts;
+﻿using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Requests;
 using StorageProject.Application.DTOs.Response;
 using StorageProject.Application.Mappers;
 using StorageProject.Domain.Contracts;
-using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Services
 {
@@ -22,8 +20,8 @@ namespace StorageProject.Application.Services
             var products = await _unitOfWork.ProductRepository.GetAllWithIncludesAsync();
             var dto = products.Select(product => ProductMapper.ToResponseDTO(
                  product,
-                 product.Brand?.Name ?? string.Empty,
-                 product.Category?.Name ?? string.Empty
+                 product.Brand.Name,
+                 product.Category.Name
              ));
 
             return dto;
@@ -37,20 +35,20 @@ namespace StorageProject.Application.Services
             await _unitOfWork.CommitAsync();
 
             var brand = await _unitOfWork.BrandRepository.GetById(productDTO.BrandId);
-            var category = await _unitOfWork.CategoryRepository.GetById(productDTO.BrandId);
+            var category = await _unitOfWork.CategoryRepository.GetById(productDTO.CategoryId);
             return ProductMapper.ToResponseDTO(
-                
+
                 entity,
-                brand?.Name ?? string.Empty,
-                category?.Name ?? string.Empty);
+                brand.Name,
+                category.Name);
         }
 
-        public Task<Product> GetByIdAsync(Guid id)
+        public Task<ProductResponseDTO> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Product> UpdateAsync(ProductDTO productDTO)
+        public Task<ProductResponseDTO> UpdateAsync(ProductDTO productDTO)
         {
             throw new NotImplementedException();
         }
