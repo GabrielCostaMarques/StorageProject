@@ -1,5 +1,5 @@
 ﻿using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs;
+using StorageProject.Application.DTOs.Requests;
 using StorageProject.Domain.Contracts;
 using StorageProject.Domain.Entity;
 
@@ -16,7 +16,7 @@ namespace StorageProject.Application.Services
 
         public async Task<ICollection<Brand>> GetAllAsync()
         {
-            return await _unitOfWork.BrandRepository.GetAll();
+            return await _unitOfWork.BrandRepository.GetAllWithIncludesAsync();
         }
 
         public Task<Guid> GetByIdAsync(Guid id)

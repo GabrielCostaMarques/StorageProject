@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs;
+using StorageProject.Application.DTOs.Requests;
+using StorageProject.Application.DTOs.Response;
 
 namespace StorageProject.Api.Controllers
 {
@@ -18,7 +19,7 @@ namespace StorageProject.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<ProductResponseDTO>> Get()
         {
             var product = await _productService.GetAllAsync();
 

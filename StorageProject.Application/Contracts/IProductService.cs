@@ -1,4 +1,5 @@
-﻿using StorageProject.Application.DTOs;
+﻿using StorageProject.Application.DTOs.Requests;
+using StorageProject.Application.DTOs.Response;
 using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Contracts
@@ -10,9 +11,9 @@ namespace StorageProject.Application.Contracts
             throw new NotImplementedException();
         }
 
-        Task<ICollection<Product>> GetAllAsync();
+        Task<IEnumerable<ProductResponseDTO>> GetAllAsync();
         Task<Product> GetByIdAsync(Guid id);
-        Task<Product> CreateAsync(ProductDTO productDTO);
+        Task<ProductResponseDTO> CreateAsync(ProductDTO productDTO);
         Task<Product> UpdateAsync(ProductDTO productDTO);
         Task RemoveAsync(Guid id);
     }

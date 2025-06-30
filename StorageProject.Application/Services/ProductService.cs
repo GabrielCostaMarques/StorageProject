@@ -1,5 +1,8 @@
-﻿using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using StorageProject.Application.Contracts;
+using StorageProject.Application.DTOs.Requests;
+using StorageProject.Application.DTOs.Response;
+using StorageProject.Application.Mappers;
 using StorageProject.Domain.Contracts;
 using StorageProject.Domain.Entity;
 
@@ -8,32 +11,38 @@ namespace StorageProject.Application.Services
     public class ProductService : IProductService
     {
         private IUnitOfWork _unitOfWork;
-
         public ProductService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
 
-        public async Task<ICollection<Product>> GetAllAsync()
+        public async Task<IEnumerable<ProductResponseDTO>> GetAllAsync()
         {
-            return await _unitOfWork.ProductRepository.GetAll();
+            var products = await _unitOfWork.ProductRepository.GetAllWithIncludesAsync();
+            var dto = products.Select(product => ProductMapper.ToResponseDTO(
+                 product,
+                 product.Brand?.Name ?? string.Empty,
+                 product.Category?.Name ?? string.Empty
+             ));
+
+            return dto;
         }
 
-        public async Task<Product> CreateAsync(ProductDTO productDTO)
+        public async Task<ProductResponseDTO> CreateAsync(ProductDTO productDTO)
         {
-            var entity = new Product
-            {
-                Name = productDTO.Name,
-                Description = productDTO.Description,
-                Quantity = productDTO.Quantity,
-                BrandId = productDTO.BrandId,
-                CategoryId = productDTO.CategoryId,
-            };
+            var entity = ProductMapper.ToEntity(productDTO);
 
             await _unitOfWork.ProductRepository.Create(entity);
             await _unitOfWork.CommitAsync();
-            return entity;
+
+            var brand = await _unitOfWork.BrandRepository.GetById(productDTO.BrandId);
+            var category = await _unitOfWork.CategoryRepository.GetById(productDTO.BrandId);
+            return ProductMapper.ToResponseDTO(
+                
+                entity,
+                brand?.Name ?? string.Empty,
+                category?.Name ?? string.Empty);
         }
 
         public Task<Product> GetByIdAsync(Guid id)

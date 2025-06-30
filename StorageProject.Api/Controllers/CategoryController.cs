@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs;
+using StorageProject.Application.DTOs.Requests;
 
 namespace StorageProject.Api.Controllers
 {

@@ -1,4 +1,4 @@
-﻿using StorageProject.Application.DTOs;
+﻿using StorageProject.Application.DTOs.Requests;
 using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Contracts

@@ -1,4 +1,4 @@
-﻿namespace StorageProject.Application.DTOs
+﻿namespace StorageProject.Application.DTOs.Requests
 {
     public class ProductDTO
     {

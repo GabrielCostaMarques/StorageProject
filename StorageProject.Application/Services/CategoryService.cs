@@ -1,5 +1,5 @@
 ﻿using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs;
+using StorageProject.Application.DTOs.Requests;
 using StorageProject.Domain.Contracts;
 using StorageProject.Domain.Entity;
 
@@ -37,7 +37,7 @@ namespace StorageProject.Application.Services
 
         public async Task<ICollection<Category>> GetAllAsync()
         {
-            return await _unitOfWork.CategoryRepository.GetAll();
+            return await _unitOfWork.CategoryRepository.GetAllWithIncludesAsync();
         }
 
         public Task<Guid> GetByIdAsync(Guid id)
