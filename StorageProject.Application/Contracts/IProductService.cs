@@ -1,6 +1,5 @@
 ﻿using StorageProject.Application.DTOs.Requests;
 using StorageProject.Application.DTOs.Response;
-using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Contracts
 {
@@ -13,7 +12,7 @@ namespace StorageProject.Application.Contracts
 
         Task<IEnumerable<ProductResponseDTO>> GetAllAsync();
         Task<ProductResponseDTO> GetByIdAsync(Guid id);
-        Task<ProductResponseDTO> CreateAsync(ProductDTO productDTO);
+        Task CreateAsync(ProductDTO productDTO);
         Task<ProductResponseDTO> UpdateAsync(ProductDTO productDTO);
         Task RemoveAsync(Guid id);
     }

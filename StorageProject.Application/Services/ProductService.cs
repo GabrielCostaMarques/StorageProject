@@ -23,14 +23,15 @@ namespace StorageProject.Application.Services
             return dto;
         }
 
-        public async Task<ProductResponseDTO> CreateAsync(ProductDTO productDTO)
+        public async Task CreateAsync(ProductDTO productDTO)
         {
             var entity = ProductMapper.ToEntity(productDTO);
 
             await _unitOfWork.ProductRepository.Create(entity);
             await _unitOfWork.CommitAsync();
 
-            return ProductMapper.ToResponseDTO(entity);
+            var created = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(entity.Id);
+
         }
 
         public async Task<ProductResponseDTO> GetByIdAsync(Guid id)
@@ -39,9 +40,15 @@ namespace StorageProject.Application.Services
             return ProductMapper.ToResponseDTO(entity);
         }
 
-        public Task<ProductResponseDTO> UpdateAsync(ProductDTO productDTO)
+        public async Task<ProductResponseDTO> UpdateAsync(ProductDTO productDTO)
         {
-            throw new NotImplementedException();
+            var entity = ProductMapper.ToEntity(productDTO);
+
+            _unitOfWork.ProductRepository.Update(entity);
+            await _unitOfWork.CommitAsync();
+
+            var created = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(entity.Id);
+            return ProductMapper.ToResponseDTO(created);
         }
 
         public async Task RemoveAsync(Guid id)

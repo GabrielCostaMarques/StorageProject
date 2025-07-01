@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Requests;
-using StorageProject.Application.DTOs.Response;
 
 namespace StorageProject.Api.Controllers
 {
@@ -42,8 +41,8 @@ namespace StorageProject.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ProductDTO productDTO)
         {
-            var product = await _productService.CreateAsync(productDTO);
-            return Ok(product);
+            await _productService.CreateAsync(productDTO);
+            return Ok();
         }
 
 

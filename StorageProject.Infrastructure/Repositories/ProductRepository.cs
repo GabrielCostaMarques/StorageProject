@@ -14,7 +14,7 @@ namespace StorageProject.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<ICollection<Product>> GetAllWithIncludesAsync(int skip = 0, int take = 40, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Product>> GetAllWithIncludesAsync(int skip = 0, int take = 40, CancellationToken cancellationToken = default)
         {
             return await _context.Products
                 .Include(p => p.Brand)
