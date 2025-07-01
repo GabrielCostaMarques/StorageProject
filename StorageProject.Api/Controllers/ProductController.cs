@@ -19,7 +19,7 @@ namespace StorageProject.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ProductResponseDTO>> Get()
+        public async Task<IActionResult> Get()
         {
             var product = await _productService.GetAllAsync();
 
@@ -29,6 +29,14 @@ namespace StorageProject.Api.Controllers
             }
 
             return  Ok(product);
+        }
+
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
+        {
+            var product = await _productService.GetByIdAsync(id);
+
+            return Ok(product);
         }
 
         [HttpPost]

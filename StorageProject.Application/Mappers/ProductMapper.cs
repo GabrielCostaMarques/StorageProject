@@ -7,16 +7,16 @@ namespace StorageProject.Application.Mappers
     public class ProductMapper
     {
 
-        public static ProductResponseDTO ToResponseDTO(Product product, string brandName, string categoryName)
+        public static ProductResponseDTO ToResponseDTO(Product product)
         {
             return new ProductResponseDTO
             {
                 Id = product.Id,
                 Name = product.Name,
                 BrandId = product.BrandId,
-                BrandName = brandName ?? string.Empty,
+                BrandName = product.Brand.Name ?? string.Empty,
                 CategoryId = product.CategoryId,
-                CategoryName = categoryName ?? string.Empty,
+                CategoryName = product.Category.Name ?? string.Empty,
                 Quantity = product.Quantity,
                 Status = product.Status,
             };

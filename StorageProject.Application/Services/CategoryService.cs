@@ -35,7 +35,7 @@ namespace StorageProject.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<Category>> GetAllAsync()
+        public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _unitOfWork.CategoryRepository.GetAllWithIncludesAsync();
         }

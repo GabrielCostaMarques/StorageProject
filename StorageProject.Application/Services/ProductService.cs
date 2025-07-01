@@ -18,11 +18,7 @@ namespace StorageProject.Application.Services
         public async Task<IEnumerable<ProductResponseDTO>> GetAllAsync()
         {
             var products = await _unitOfWork.ProductRepository.GetAllWithIncludesAsync();
-            var dto = products.Select(product => ProductMapper.ToResponseDTO(
-                 product,
-                 product.Brand.Name,
-                 product.Category.Name
-             ));
+            var dto = products.Select(product => ProductMapper.ToResponseDTO(product));
 
             return dto;
         }
@@ -34,18 +30,13 @@ namespace StorageProject.Application.Services
             await _unitOfWork.ProductRepository.Create(entity);
             await _unitOfWork.CommitAsync();
 
-            var brand = await _unitOfWork.BrandRepository.GetById(productDTO.BrandId);
-            var category = await _unitOfWork.CategoryRepository.GetById(productDTO.CategoryId);
-            return ProductMapper.ToResponseDTO(
-
-                entity,
-                brand.Name,
-                category.Name);
+            return ProductMapper.ToResponseDTO(entity);
         }
 
-        public Task<ProductResponseDTO> GetByIdAsync(Guid id)
+        public async Task<ProductResponseDTO> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(id);
+            return ProductMapper.ToResponseDTO(entity);
         }
 
         public Task<ProductResponseDTO> UpdateAsync(ProductDTO productDTO)

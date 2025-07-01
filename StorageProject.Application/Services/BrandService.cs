@@ -14,7 +14,7 @@ namespace StorageProject.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ICollection<Brand>> GetAllAsync()
+        public async Task<IEnumerable<Brand>> GetAllAsync()
         {
             return await _unitOfWork.BrandRepository.GetAllWithIncludesAsync();
         }

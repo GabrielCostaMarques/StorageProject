@@ -5,7 +5,7 @@ using StorageProject.Infrasctructure.Data;
 
 namespace StorageProject.Infrastructure.Repositories
 {
-    public class ProductRepository : Repository<Product>,IProductRepository
+    public class ProductRepository : Repository<Product>, IProductRepository
     {
 
         private readonly AppDbContext _context;
@@ -23,6 +23,14 @@ namespace StorageProject.Infrastructure.Repositories
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<Product> GetByIdWithIncludesAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
     }
 }
