@@ -45,6 +45,13 @@ namespace StorageProject.Api.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] ChangeProductDTO changeProductDTO)
+        {
+            await _productService.UpdateAsync(changeProductDTO);
+            return Ok();
+        }
+
 
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid id)

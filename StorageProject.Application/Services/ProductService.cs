@@ -37,18 +37,18 @@ namespace StorageProject.Application.Services
         public async Task<ProductResponseDTO> GetByIdAsync(Guid id)
         {
             var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(id);
-            return ProductMapper.ToResponseDTO(entity);
+            return entity.ToResponseDTO();
         }
 
-        public async Task<ProductResponseDTO> UpdateAsync(ProductDTO productDTO)
+        public async Task<ProductResponseDTO> UpdateAsync(ChangeProductDTO changeProductDTO)
         {
-            var entity = ProductMapper.ToEntity(productDTO);
 
-            _unitOfWork.ProductRepository.Update(entity);
-            await _unitOfWork.CommitAsync();
+            var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(changeProductDTO.Id);
+            changeProductDTO.ToEntity(entity);
 
-            var created = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(entity.Id);
-            return ProductMapper.ToResponseDTO(created);
+            await _unitOfWork.CommitAsync();//The EF detect the tracking, don't need .Update() function
+
+            return entity.ToResponseDTO();
         }
 
         public async Task RemoveAsync(Guid id)

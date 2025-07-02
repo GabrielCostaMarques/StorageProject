@@ -13,7 +13,7 @@ namespace StorageProject.Application.Contracts
         Task<IEnumerable<ProductResponseDTO>> GetAllAsync();
         Task<ProductResponseDTO> GetByIdAsync(Guid id);
         Task CreateAsync(ProductDTO productDTO);
-        Task<ProductResponseDTO> UpdateAsync(ProductDTO productDTO);
+        Task<ProductResponseDTO> UpdateAsync(ChangeProductDTO changeProductDTO);
         Task RemoveAsync(Guid id);
     }
 }

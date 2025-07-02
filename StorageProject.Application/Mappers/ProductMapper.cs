@@ -4,24 +4,27 @@ using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Mappers
 {
-    public class ProductMapper
+    public static class ProductMapper
     {
 
-        public static ProductResponseDTO ToResponseDTO(Product product)
+        public static ProductResponseDTO ToResponseDTO(this Product product)
         {
             return new ProductResponseDTO
             {
                 Id = product.Id,
                 Name = product.Name,
-                BrandId = product.BrandId,
-                BrandName = product.Brand.Name ?? string.Empty,
-                CategoryId = product.CategoryId,
-                CategoryName = product.Category.Name ?? string.Empty,
                 Quantity = product.Quantity,
                 Status = product.Status,
+                Description = product.Description ?? string.Empty,
+                BrandName = product.Brand.Name ?? string.Empty,
+                CategoryName = product.Category.Name ?? string.Empty,
+                BrandId = product.BrandId,
+                CategoryId = product.CategoryId,
+
+                
             };
         }
-        public static Product ToEntity(ProductDTO dto)
+        public static Product ToEntity(this ProductDTO dto)
         {
             return new Product
             {
@@ -33,6 +36,19 @@ namespace StorageProject.Application.Mappers
                 CategoryId = dto.CategoryId
             };
         }
+
+        public static void ToEntity(this ChangeProductDTO dto, Product product)
+        {
+
+            product.Id = dto.Id;
+            product.Name = dto.Name;
+            product.Description = dto.Description;
+            product.Quantity = dto.Quantity;
+            product.BrandId = dto.BrandId;
+            product.CategoryId = dto.CategoryId;
+
+        }
+
 
     }
 }
