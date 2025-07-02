@@ -22,11 +22,6 @@ namespace StorageProject.Api.Controllers
         {
             var product = await _productService.GetAllAsync();
 
-            if (!product.Any())
-            {
-                return NotFound();
-            }
-
             return  Ok(product);
         }
 

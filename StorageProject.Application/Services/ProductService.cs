@@ -2,6 +2,7 @@
 using StorageProject.Application.DTOs.Requests;
 using StorageProject.Application.DTOs.Response;
 using StorageProject.Application.Mappers;
+using StorageProject.Application.ModelResult;
 using StorageProject.Domain.Contracts;
 
 namespace StorageProject.Application.Services
@@ -15,12 +16,19 @@ namespace StorageProject.Application.Services
         }
 
 
-        public async Task<IEnumerable<ProductResponseDTO>> GetAllAsync()
+        public async Task<Result<IEnumerable<ProductResponseDTO>>> GetAllAsync()
         {
+            
             var products = await _unitOfWork.ProductRepository.GetAllWithIncludesAsync();
-            var dto = products.Select(product => ProductMapper.ToResponseDTO(product));
 
-            return dto;
+            if (!products.Any())
+            {
+                return Result<IEnumerable<ProductResponseDTO>>.Failure("Empty List");
+            }
+
+            var dto = products.Select(product => ProductMapper.ToResponseDTO(product)).ToList();
+
+            return Result<IEnumerable<ProductResponseDTO>>.Success(dto);
         }
 
         public async Task CreateAsync(ProductDTO productDTO)
@@ -28,16 +36,22 @@ namespace StorageProject.Application.Services
             var entity = ProductMapper.ToEntity(productDTO);
 
             await _unitOfWork.ProductRepository.Create(entity);
+
+
+
             await _unitOfWork.CommitAsync();
 
             var created = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(entity.Id);
 
         }
 
-        public async Task<ProductResponseDTO> GetByIdAsync(Guid id)
+        public async Task<Result<ProductResponseDTO>> GetByIdAsync(Guid id)
         {
             var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(id);
-            return entity.ToResponseDTO();
+
+            if (entity == null) return Result<ProductResponseDTO>.Failure("Not Found Product");
+
+            return Result<ProductResponseDTO>.Success(entity.ToResponseDTO());
         }
 
         public async Task<ProductResponseDTO> UpdateAsync(ChangeProductDTO changeProductDTO)
