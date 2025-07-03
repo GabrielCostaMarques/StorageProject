@@ -1,4 +1,6 @@
-﻿namespace StorageProject.Application.ModelResult
+﻿
+
+namespace StorageProject.Application.ModelResult
 {
     public class Result<T>
     {
@@ -17,6 +19,6 @@
         public static Result<T> Failure(List<string> errors) => new Result<T>(default, false, errors);
         public static Result<T> Failure(string error) => new Result<T>(default, false, new List<string>() { error });
 
-        //todo: http results
+     
     }
 }

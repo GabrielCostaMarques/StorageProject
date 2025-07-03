@@ -1,6 +1,7 @@
-﻿using StorageProject.Application.DTOs.Requests;
+﻿using Ardalis.Result;
+using StorageProject.Application.DTOs.Requests;
 using StorageProject.Application.DTOs.Response;
-using StorageProject.Application.ModelResult;
+
 
 namespace StorageProject.Application.Contracts
 {
@@ -13,8 +14,8 @@ namespace StorageProject.Application.Contracts
 
         Task<Result<IEnumerable<ProductResponseDTO>>> GetAllAsync();
         Task<Result<ProductResponseDTO>> GetByIdAsync(Guid id);
-        Task CreateAsync(ProductDTO productDTO);
-        Task<ProductResponseDTO> UpdateAsync(ChangeProductDTO changeProductDTO);
-        Task RemoveAsync(Guid id);
+        Task<Result<ProductResponseDTO>> CreateAsync(ProductDTO productDTO);
+        Task<Result<ProductResponseDTO>> UpdateAsync(ChangeProductDTO changeProductDTO);
+        Task<Result> RemoveAsync(Guid id);
     }
 }

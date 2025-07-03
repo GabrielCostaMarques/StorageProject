@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Ardalis.Result;
+using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Requests;
 
@@ -18,6 +19,8 @@ namespace StorageProject.Api.Controllers
         }
 
         [HttpGet]
+
+
         public async Task<IActionResult> Get()
         {
             var product = await _productService.GetAllAsync();
@@ -29,6 +32,11 @@ namespace StorageProject.Api.Controllers
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var product = await _productService.GetByIdAsync(id);
+
+            if (product.IsNotFound())
+            {
+                return NotFound(product);
+            }
 
             return Ok(product);
         }

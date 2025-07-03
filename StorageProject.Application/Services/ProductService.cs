@@ -1,8 +1,9 @@
-﻿using StorageProject.Application.Contracts;
+﻿using Ardalis.Result;
+using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Requests;
 using StorageProject.Application.DTOs.Response;
 using StorageProject.Application.Mappers;
-using StorageProject.Application.ModelResult;
+
 using StorageProject.Domain.Contracts;
 
 namespace StorageProject.Application.Services
@@ -18,46 +19,42 @@ namespace StorageProject.Application.Services
 
         public async Task<Result<IEnumerable<ProductResponseDTO>>> GetAllAsync()
         {
-            
             var products = await _unitOfWork.ProductRepository.GetAllWithIncludesAsync();
 
-            if (!products.Any())
-            {
-                return Result<IEnumerable<ProductResponseDTO>>.Failure("Empty List");
-            }
+            if (!products.Any()) return Result.SuccessWithMessage("Empty List");
+            
+            var dto = products.Select(product => product.ToResponseDTO()).ToList();
 
-            var dto = products.Select(product => ProductMapper.ToResponseDTO(product)).ToList();
-
-            return Result<IEnumerable<ProductResponseDTO>>.Success(dto);
+            return dto;
         }
 
-        public async Task CreateAsync(ProductDTO productDTO)
+        public async Task <Result<ProductResponseDTO>>CreateAsync(ProductDTO productDTO)
         {
-            var entity = ProductMapper.ToEntity(productDTO);
+            var entity = productDTO.ToEntity();
 
             await _unitOfWork.ProductRepository.Create(entity);
-
-
-
             await _unitOfWork.CommitAsync();
 
             var created = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(entity.Id);
 
+            return created.ToResponseDTO();
         }
 
         public async Task<Result<ProductResponseDTO>> GetByIdAsync(Guid id)
         {
             var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(id);
 
-            if (entity == null) return Result<ProductResponseDTO>.Failure("Not Found Product");
+            if (entity == null) return Result.NotFound("Not Found Product");
 
             return Result<ProductResponseDTO>.Success(entity.ToResponseDTO());
         }
 
-        public async Task<ProductResponseDTO> UpdateAsync(ChangeProductDTO changeProductDTO)
+        public async Task<Result<ProductResponseDTO>> UpdateAsync(ChangeProductDTO changeProductDTO)
         {
-
             var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(changeProductDTO.Id);
+
+            if (entity == null) return Result.NotFound("Not Found Product");
+
             changeProductDTO.ToEntity(entity);
 
             await _unitOfWork.CommitAsync();//The EF detect the tracking, don't need .Update() function
@@ -65,16 +62,16 @@ namespace StorageProject.Application.Services
             return entity.ToResponseDTO();
         }
 
-        public async Task RemoveAsync(Guid id)
+        public async Task<Result> RemoveAsync(Guid id)
         {
             var product = await _unitOfWork.ProductRepository.GetById(id);
-
-            if (product is null)
-                throw new Exception("Produto não encontrado");
+            if (product is null) return Result.NotFound("Not Found Product");
 
             _unitOfWork.ProductRepository.Delete(product);
 
             await _unitOfWork.CommitAsync();
+
+            return Result.SuccessWithMessage("Product was deleted with sucess");
         }
 
         public void Dispose()
