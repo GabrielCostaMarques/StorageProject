@@ -1,4 +1,5 @@
-﻿using StorageProject.Application.Contracts;
+﻿using Ardalis.Result;
+using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Requests;
 using StorageProject.Domain.Contracts;
 using StorageProject.Domain.Entity;
@@ -16,12 +17,12 @@ namespace StorageProject.Application.Services
 
         public async Task<IEnumerable<Brand>> GetAllAsync()
         {
-            return await _unitOfWork.BrandRepository.GetAllWithIncludesAsync();
+            return await _unitOfWork.BrandRepository.GetAll();
         }
 
-        public Task<Guid> GetByIdAsync(Guid id)
+        public async Task<Brand> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.BrandRepository.GetById(id);
         }
 
         public async Task<Brand> CreateAsync(BrandDTO brandDTO)
@@ -37,14 +38,26 @@ namespace StorageProject.Application.Services
             return brand;
         }
 
-        public Task<Brand> UpdateAsync(BrandDTO brandDTO)
+        public async Task<Brand> UpdateAsync(Brand brand)
         {
-            throw new NotImplementedException();
+            var entity = await _unitOfWork.BrandRepository.GetById(brand.Id);
+
+            entity = new Brand()
+            {
+                Name = brand.Name,
+            };
+
+            await _unitOfWork.CommitAsync();
+
+            return entity;
         }
 
-        public void DeleteById(Guid id)
+        public async Task<Result> DeleteById(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = await _unitOfWork.BrandRepository.GetById(id);
+            _unitOfWork.BrandRepository.Delete(entity);
+            await _unitOfWork.CommitAsync();
+            return Result.SuccessWithMessage("Brand deleted successfully.");
         }
 
          
