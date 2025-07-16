@@ -2,6 +2,7 @@
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Requests;
 using StorageProject.Application.Services;
+using StorageProject.Domain.Entity;
 
 namespace StorageProject.Api.Controllers
 {
@@ -35,6 +36,25 @@ namespace StorageProject.Api.Controllers
         {
             var brand = await _brandService.CreateAsync(brandDTO);
             return Ok(brand);
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] Brand brand)
+        {
+            var updatedBrand = await _brandService.UpdateAsync(brand);
+            return Ok(updatedBrand);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _brandService.DeleteById(id);
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.Errors);
+            }
+            return Ok(result);
         }
     }
 }

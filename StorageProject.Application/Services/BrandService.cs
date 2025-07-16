@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Requests;
+using StorageProject.Application.Mappers;
 using StorageProject.Domain.Contracts;
 using StorageProject.Domain.Entity;
 
@@ -25,12 +26,14 @@ namespace StorageProject.Application.Services
             return await _unitOfWork.BrandRepository.GetById(id);
         }
 
-        public async Task<Brand> CreateAsync(BrandDTO brandDTO)
+        public async Task<Result<Brand>> CreateAsync(BrandDTO brandDTO)
         {
-            var entity = new Brand()
+            var entity = brandDTO.ToEntity();
+
+            if (entity.Name.Any())
             {
-                Name = brandDTO.Name,
-            };
+                
+            }
 
             var brand = await _unitOfWork.BrandRepository.Create(entity);
             await _unitOfWork.CommitAsync();
@@ -38,14 +41,13 @@ namespace StorageProject.Application.Services
             return brand;
         }
 
-        public async Task<Brand> UpdateAsync(Brand brand)
+        public async Task<Result<Brand>> UpdateAsync(ChangeBrandDTO changeBrandDTO)
         {
-            var entity = await _unitOfWork.BrandRepository.GetById(brand.Id);
 
-            entity = new Brand()
-            {
-                Name = brand.Name,
-            };
+            //todo: to return Result<BrandDTO> instead of Brand
+            var entity = await _unitOfWork.BrandRepository.GetById(changeBrandDTO.Id);
+
+            changeBrandDTO.ToEntity(entity);
 
             await _unitOfWork.CommitAsync();
 
