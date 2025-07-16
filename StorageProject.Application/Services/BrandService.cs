@@ -30,28 +30,27 @@ namespace StorageProject.Application.Services
         {
             var entity = brandDTO.ToEntity();
 
-            if (entity.Name.Any())
+            if (!entity.Name.Any())
             {
-                
+                Result.Conflict("There's a brand with same name");
             }
 
             var brand = await _unitOfWork.BrandRepository.Create(entity);
             await _unitOfWork.CommitAsync();
 
-            return brand;
+            return Result.Created(brand,"Brand Created with success");
         }
 
-        public async Task<Result<Brand>> UpdateAsync(ChangeBrandDTO changeBrandDTO)
+        public async Task<Result> UpdateAsync(ChangeBrandDTO changeBrandDTO)
         {
 
-            //todo: to return Result<BrandDTO> instead of Brand
             var entity = await _unitOfWork.BrandRepository.GetById(changeBrandDTO.Id);
 
             changeBrandDTO.ToEntity(entity);
 
             await _unitOfWork.CommitAsync();
-
-            return entity;
+            
+            return Result.SuccessWithMessage("Brand updated successfully.");
         }
 
         public async Task<Result> DeleteById(Guid id)
