@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Requests;
+using StorageProject.Application.DTOs.Requests.Product;
 using StorageProject.Application.DTOs.Response;
 using StorageProject.Application.Mappers;
 
@@ -28,9 +28,9 @@ namespace StorageProject.Application.Services
             return dto;
         }
 
-        public async Task <Result<ProductResponseDTO>>CreateAsync(ProductDTO productDTO)
+        public async Task <Result<ProductResponseDTO>>CreateAsync(CreateProductDTO createProductDTO)
         {
-            var entity = productDTO.ToEntity();
+            var entity = createProductDTO.ToEntity();
 
             await _unitOfWork.ProductRepository.Create(entity);
             await _unitOfWork.CommitAsync();

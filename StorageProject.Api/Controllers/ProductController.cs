@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Requests;
+using StorageProject.Application.DTOs.Requests.Product;
 
 namespace StorageProject.Api.Controllers
 {

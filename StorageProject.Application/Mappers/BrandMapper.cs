@@ -1,4 +1,4 @@
-﻿using StorageProject.Application.DTOs.Requests;
+﻿using StorageProject.Application.DTOs.Requests.Brand;
 using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Mappers
@@ -6,6 +6,13 @@ namespace StorageProject.Application.Mappers
     public static class BrandMapper
     {
 
+        public static BrandDTO ToDTO(this Brand brand)
+        {
+            return new BrandDTO
+            {
+                Name = brand.Name
+            };
+        }
         public static Brand ToEntity(this BrandDTO dto)
         {
             return new Brand

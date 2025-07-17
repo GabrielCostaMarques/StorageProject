@@ -1,4 +1,4 @@
-﻿namespace StorageProject.Application.DTOs.Requests
+﻿namespace StorageProject.Application.DTOs.Requests.Category
 {
     public class CategoryDTO
     {

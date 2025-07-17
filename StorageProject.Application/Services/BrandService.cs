@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
+using FluentValidation.Validators;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Requests;
+using StorageProject.Application.DTOs.Requests.Brand;
 using StorageProject.Application.Mappers;
 using StorageProject.Domain.Contracts;
 using StorageProject.Domain.Entity;
@@ -16,17 +17,19 @@ namespace StorageProject.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Brand>> GetAllAsync()
+        public async Task<IEnumerable<BrandDTO>> GetAllAsync()
         {
-            return await _unitOfWork.BrandRepository.GetAll();
+            var entity = await _unitOfWork.BrandRepository.GetAll();
+            return entity.Select(b => b.ToDTO());
         }
 
-        public async Task<Brand> GetByIdAsync(Guid id)
+        public async Task<Result<BrandDTO>> GetByIdAsync(Guid id)
         {
-            return await _unitOfWork.BrandRepository.GetById(id);
+            var entity = await _unitOfWork.BrandRepository.GetById(id);
+            return entity.ToDTO();
         }
 
-        public async Task<Result<Brand>> CreateAsync(BrandDTO brandDTO)
+        public async Task<Result<BrandDTO>> CreateAsync(BrandDTO brandDTO)
         {
             var entity = brandDTO.ToEntity();
 
@@ -36,9 +39,10 @@ namespace StorageProject.Application.Services
             }
 
             var brand = await _unitOfWork.BrandRepository.Create(entity);
+
             await _unitOfWork.CommitAsync();
 
-            return Result.Created(brand,"Brand Created with success");
+            return brand.ToDTO();
         }
 
         public async Task<Result> UpdateAsync(ChangeBrandDTO changeBrandDTO)
@@ -49,11 +53,11 @@ namespace StorageProject.Application.Services
             changeBrandDTO.ToEntity(entity);
 
             await _unitOfWork.CommitAsync();
-            
+
             return Result.SuccessWithMessage("Brand updated successfully.");
         }
 
-        public async Task<Result> DeleteById(Guid id)
+        public async Task<Result> DeleteAsync(Guid id)
         {
             var entity = await _unitOfWork.BrandRepository.GetById(id);
             _unitOfWork.BrandRepository.Delete(entity);
@@ -61,6 +65,6 @@ namespace StorageProject.Application.Services
             return Result.SuccessWithMessage("Brand deleted successfully.");
         }
 
-         
+
     }
 }

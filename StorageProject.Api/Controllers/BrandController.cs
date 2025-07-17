@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Requests;
-using StorageProject.Application.Services;
+using StorageProject.Application.DTOs.Requests.Brand;
 using StorageProject.Domain.Entity;
 
 namespace StorageProject.Api.Controllers

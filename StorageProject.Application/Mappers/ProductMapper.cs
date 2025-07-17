@@ -1,4 +1,4 @@
-﻿using StorageProject.Application.DTOs.Requests;
+﻿using StorageProject.Application.DTOs.Requests.Product;
 using StorageProject.Application.DTOs.Response;
 using StorageProject.Domain.Entity;
 
@@ -24,7 +24,7 @@ namespace StorageProject.Application.Mappers
                 
             };
         }
-        public static Product ToEntity(this ProductDTO dto)
+        public static Product ToEntity(this CreateProductDTO dto)
         {
             return new Product
             {
