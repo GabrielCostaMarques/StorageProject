@@ -22,7 +22,7 @@ namespace StorageProject.Application.Mappers
             };
         }
 
-        public static void ToEntity(this ChangeBrandDTO dto, Brand brand)
+        public static void ToEntity(this UpdateBrandDTO dto, Brand brand)
         {
             brand.Id = dto.Id;
             brand.Name = dto.Name;

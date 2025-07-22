@@ -1,6 +1,6 @@
 ﻿namespace StorageProject.Application.DTOs.Brand
 {
-    public record ChangeBrandDTO : BrandDTO
+    public record UpdateBrandDTO : BrandDTO
     {
         public Guid Id { get; init; }
     }

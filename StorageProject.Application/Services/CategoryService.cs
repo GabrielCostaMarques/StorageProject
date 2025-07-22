@@ -1,5 +1,7 @@
-﻿using StorageProject.Application.Contracts;
+﻿using Ardalis.Result;
+using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Category;
+using StorageProject.Application.Mappers;
 using StorageProject.Domain.Contracts;
 using StorageProject.Domain.Entity;
 
@@ -14,40 +16,36 @@ namespace StorageProject.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-
-        public async Task<Category> CreateAsync(CategoryDTO categoryDTO)
+        public async Task<Result> CreateAsync(CategoryDTO categoryDTO)
         {
-            var entity = new Category()
+            var entity = categoryDTO.ToEntity();
+            if (!entity.Name.Any())
             {
-                Name = categoryDTO.Name,
-                Description = categoryDTO.Description,
-            };
+                return Result.Conflict("Category name cannot be empty.");
+            }
+            var category = await _unitOfWork.CategoryRepository.Create(entity);
 
-            await _unitOfWork.CategoryRepository.Create(entity);
             await _unitOfWork.CommitAsync();
-
-            return entity;
-
+            return Result.SuccessWithMessage("Category created successfully.");
         }
 
-        public void DeleteById(Guid id)
+        public Task<IEnumerable<Category>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync()
-        {
-            return await _unitOfWork.CategoryRepository.GetAllWithIncludesAsync();
-        }
-
-        public Task<Guid> GetByIdAsync(Guid id)
+        public Task<CategoryDTO> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Category> UpdateAsync(CategoryDTO categoryDTO)
+        public Task<Result> RemoveAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result> UpdateAsync(CategoryDTO categoryDTO)
         {
             throw new NotImplementedException();
         }
     }
-}

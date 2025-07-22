@@ -38,7 +38,7 @@ namespace StorageProject.Api.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] ChangeBrandDTO changeBrandDTO)
+        public async Task<IActionResult> Update([FromBody] UpdateBrandDTO changeBrandDTO)
         {
             var updatedBrand = await _brandService.UpdateAsync(changeBrandDTO);
             return Ok(updatedBrand);

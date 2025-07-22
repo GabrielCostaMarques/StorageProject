@@ -45,12 +45,12 @@ namespace StorageProject.Application.Services
             return brand.ToDTO();
         }
 
-        public async Task<Result> UpdateAsync(ChangeBrandDTO changeBrandDTO)
+        public async Task<Result> UpdateAsync(UpdateBrandDTO updateBrandDTO)
         {
 
-            var entity = await _unitOfWork.BrandRepository.GetById(changeBrandDTO.Id);
+            var entity = await _unitOfWork.BrandRepository.GetById(updateBrandDTO.Id);
 
-            changeBrandDTO.ToEntity(entity);
+            updateBrandDTO.ToEntity(entity);
 
             await _unitOfWork.CommitAsync();
 
