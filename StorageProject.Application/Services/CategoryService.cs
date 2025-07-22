@@ -1,5 +1,5 @@
 ﻿using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Requests.Category;
+using StorageProject.Application.DTOs.Category;
 using StorageProject.Domain.Contracts;
 using StorageProject.Domain.Entity;
 

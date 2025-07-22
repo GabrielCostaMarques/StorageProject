@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using StorageProject.Application.DTOs.Requests.Brand;
+using StorageProject.Application.DTOs.Brand;
 using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Contracts
@@ -11,7 +11,7 @@ namespace StorageProject.Application.Contracts
         public Task<Result<BrandDTO>> GetByIdAsync(Guid id);
         public Task<Result<BrandDTO>> CreateAsync(BrandDTO brandDTO);
         public Task<Result> UpdateAsync(ChangeBrandDTO changeBrandDTO);
-        public Task<Result> DeleteAsync(Guid id);
+        public Task<Result> RemoveAsync(Guid id);
 
     }
 }

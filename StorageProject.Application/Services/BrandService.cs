@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using FluentValidation.Validators;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Requests.Brand;
+using StorageProject.Application.DTOs.Brand;
 using StorageProject.Application.Mappers;
 using StorageProject.Domain.Contracts;
 using StorageProject.Domain.Entity;
@@ -57,7 +57,7 @@ namespace StorageProject.Application.Services
             return Result.SuccessWithMessage("Brand updated successfully.");
         }
 
-        public async Task<Result> DeleteAsync(Guid id)
+        public async Task<Result> RemoveAsync(Guid id)
         {
             var entity = await _unitOfWork.BrandRepository.GetById(id);
             _unitOfWork.BrandRepository.Delete(entity);

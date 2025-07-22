@@ -1,4 +1,4 @@
-﻿using StorageProject.Application.DTOs.Requests.Brand;
+﻿using StorageProject.Application.DTOs.Brand;
 using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Mappers

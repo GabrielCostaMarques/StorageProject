@@ -1,7 +1,6 @@
 ﻿using Ardalis.Result;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Requests.Product;
-using StorageProject.Application.DTOs.Response;
+using StorageProject.Application.DTOs.Product;
 using StorageProject.Application.Mappers;
 
 using StorageProject.Domain.Contracts;
@@ -49,7 +48,7 @@ namespace StorageProject.Application.Services
             return Result<ProductResponseDTO>.Success(entity.ToResponseDTO());
         }
 
-        public async Task<Result<ProductResponseDTO>> UpdateAsync(ChangeProductDTO changeProductDTO)
+        public async Task<Result<ProductResponseDTO>> UpdateAsync(UpdateProductDTO changeProductDTO)
         {
             var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(changeProductDTO.Id);
 

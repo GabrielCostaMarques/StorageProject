@@ -1,5 +1,4 @@
-﻿using StorageProject.Application.DTOs.Requests.Product;
-using StorageProject.Application.DTOs.Response;
+﻿using StorageProject.Application.DTOs.Product;
 using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Mappers
@@ -37,7 +36,7 @@ namespace StorageProject.Application.Mappers
             };
         }
 
-        public static void ToEntity(this ChangeProductDTO dto, Product product)
+        public static void ToEntity(this UpdateProductDTO dto, Product product)
         {
 
             product.Id = dto.Id;

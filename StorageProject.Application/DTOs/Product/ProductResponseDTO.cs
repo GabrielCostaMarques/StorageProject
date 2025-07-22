@@ -1,6 +1,6 @@
 ﻿using StorageProject.Domain.Entities.Enums;
 
-namespace StorageProject.Application.DTOs.Response
+namespace StorageProject.Application.DTOs.Product
 {
     public class ProductResponseDTO
     {

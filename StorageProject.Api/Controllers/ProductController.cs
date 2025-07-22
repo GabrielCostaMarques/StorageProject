@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Requests.Product;
+using StorageProject.Application.DTOs.Product;
 
 namespace StorageProject.Api.Controllers
 {
@@ -42,21 +42,21 @@ namespace StorageProject.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ProductDTO productDTO)
+        public async Task<IActionResult> Create([FromBody] CreateProductDTO createProductDTO)
         {
-            await _productService.CreateAsync(productDTO);
+            await _productService.CreateAsync(createProductDTO);
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] ChangeProductDTO changeProductDTO)
+        public async Task<IActionResult> Update([FromBody] UpdateProductDTO updateProductDTO)
         {
-            await _productService.UpdateAsync(changeProductDTO);
+            await _productService.UpdateAsync(updateProductDTO);
             return Ok();
         }
 
 
-        [HttpDelete]
+        [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _productService.RemoveAsync(id);

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Requests.Brand;
-using StorageProject.Domain.Entity;
+using StorageProject.Application.DTOs.Brand;
 
 namespace StorageProject.Api.Controllers
 {
@@ -39,16 +38,16 @@ namespace StorageProject.Api.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] Brand brand)
+        public async Task<IActionResult> Update([FromBody] ChangeBrandDTO changeBrandDTO)
         {
-            var updatedBrand = await _brandService.UpdateAsync(brand);
+            var updatedBrand = await _brandService.UpdateAsync(changeBrandDTO);
             return Ok(updatedBrand);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _brandService.DeleteById(id);
+            var result = await _brandService.RemoveAsync(id);
             if (!result.IsSuccess)
             {
                 return NotFound(result.Errors);
