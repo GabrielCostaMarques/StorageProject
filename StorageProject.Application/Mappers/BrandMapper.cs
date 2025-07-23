@@ -10,10 +10,11 @@ namespace StorageProject.Application.Mappers
         {
             return new BrandDTO
             {
+                Id = brand.Id,
                 Name = brand.Name
             };
         }
-        public static Brand ToEntity(this BrandDTO dto)
+        public static Brand ToEntity(this CreateBrandDTO dto)
         {
             return new Brand
             {

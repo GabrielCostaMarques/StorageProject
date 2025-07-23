@@ -29,23 +29,48 @@ namespace StorageProject.Application.Services
             return Result.SuccessWithMessage("Category created successfully.");
         }
 
-        public Task<IEnumerable<Category>> GetAllAsync()
+        public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.CategoryRepository.GetAll();
         }
 
-        public Task<CategoryDTO> GetByIdAsync(Guid id)
+        public async Task<Result<CategoryDTO>> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = await _unitOfWork.CategoryRepository.GetById(id);
+            if (entity == null)
+            {
+                return Result.NotFound("Category not found");
+            }
+
+            return entity.ToDTO();
         }
 
-        public Task<Result> RemoveAsync(Guid id)
+        public async Task<Result> RemoveAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = await _unitOfWork.CategoryRepository.GetById(id);
+            if (entity == null)
+            {
+                return Result.NotFound("Category not found");
+
+            }
+
+            _unitOfWork.CategoryRepository.Delete(entity);
+            await _unitOfWork.CommitAsync();
+            return Result.SuccessWithMessage("Category removed successfully.");
         }
 
-        public Task<Result> UpdateAsync(CategoryDTO categoryDTO)
+        public async Task<Result> UpdateAsync(UpdateCategoryDTO updateCategoryDTO)
         {
-            throw new NotImplementedException();
+            var entity = await _unitOfWork.CategoryRepository.GetById(updateCategoryDTO.Id);
+
+            if (entity == null)
+            {
+                return Result.NotFound("Category not found");
+            }
+            updateCategoryDTO.ToEntity(entity);
+            await _unitOfWork.CommitAsync();
+            return Result.SuccessWithMessage("Category updated successfully.");
+
         }
     }
+}

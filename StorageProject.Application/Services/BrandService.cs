@@ -1,10 +1,8 @@
 ﻿using Ardalis.Result;
-using FluentValidation.Validators;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Brand;
 using StorageProject.Application.Mappers;
 using StorageProject.Domain.Contracts;
-using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Services
 {
@@ -26,12 +24,16 @@ namespace StorageProject.Application.Services
         public async Task<Result<BrandDTO>> GetByIdAsync(Guid id)
         {
             var entity = await _unitOfWork.BrandRepository.GetById(id);
+            if (entity == null)
+            {
+                return Result.NotFound("Brand not found");
+            }
             return entity.ToDTO();
         }
 
-        public async Task<Result<BrandDTO>> CreateAsync(BrandDTO brandDTO)
+        public async Task<Result<BrandDTO>> CreateAsync(CreateBrandDTO createBrandDTO)
         {
-            var entity = brandDTO.ToEntity();
+            var entity = createBrandDTO.ToEntity();
 
             if (!entity.Name.Any())
             {

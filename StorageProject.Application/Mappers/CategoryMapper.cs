@@ -9,7 +9,9 @@ namespace StorageProject.Application.Mappers
         {
             return new CategoryDTO
             {
-                Name = category.Name
+                Name = category.Name,
+                Description = category.Description
+
             };
         }
         public static Category ToEntity(this CategoryDTO dto)
@@ -17,7 +19,9 @@ namespace StorageProject.Application.Mappers
             return new Category
             {
                 Id = Guid.NewGuid(),
-                Name = dto.Name
+                Name = dto.Name,
+                Description = dto.Description
+
             };
         }
 
@@ -25,6 +29,7 @@ namespace StorageProject.Application.Mappers
         {
             category.Id = dto.Id;
             category.Name = dto.Name;
+            category.Description = dto.Description;
 
         }
     }

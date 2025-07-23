@@ -16,18 +16,18 @@ namespace StorageProject.Application.Services
         }
 
 
-        public async Task<Result<IEnumerable<ProductResponseDTO>>> GetAllAsync()
+        public async Task<Result<IEnumerable<ProductDTO>>> GetAllAsync()
         {
             var products = await _unitOfWork.ProductRepository.GetAllWithIncludesAsync();
 
             if (!products.Any()) return Result.SuccessWithMessage("Empty List");
             
-            var dto = products.Select(product => product.ToResponseDTO()).ToList();
+            var dto = products.Select(product => product.ToDTO()).ToList();
 
             return dto;
         }
 
-        public async Task <Result<ProductResponseDTO>>CreateAsync(CreateProductDTO createProductDTO)
+        public async Task <Result<ProductDTO>>CreateAsync(CreateProductDTO createProductDTO)
         {
             var entity = createProductDTO.ToEntity();
 
@@ -36,19 +36,19 @@ namespace StorageProject.Application.Services
 
             var created = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(entity.Id);
 
-            return created.ToResponseDTO();
+            return created.ToDTO();
         }
 
-        public async Task<Result<ProductResponseDTO>> GetByIdAsync(Guid id)
+        public async Task<Result<ProductDTO>> GetByIdAsync(Guid id)
         {
             var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(id);
 
             if (entity == null) return Result.NotFound("Not Found Product");
 
-            return Result<ProductResponseDTO>.Success(entity.ToResponseDTO());
+            return Result<ProductDTO>.Success(entity.ToDTO());
         }
 
-        public async Task<Result<ProductResponseDTO>> UpdateAsync(UpdateProductDTO changeProductDTO)
+        public async Task<Result<ProductDTO>> UpdateAsync(UpdateProductDTO changeProductDTO)
         {
             var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(changeProductDTO.Id);
 
@@ -58,7 +58,7 @@ namespace StorageProject.Application.Services
 
             await _unitOfWork.CommitAsync();//The EF detect the tracking, don't need .Update() function
 
-            return entity.ToResponseDTO();
+            return entity.ToDTO();
         }
 
         public async Task<Result> RemoveAsync(Guid id)

@@ -6,9 +6,9 @@ namespace StorageProject.Application.Mappers
     public static class ProductMapper
     {
 
-        public static ProductResponseDTO ToResponseDTO(this Product product)
+        public static ProductDTO ToDTO(this Product product)
         {
-            return new ProductResponseDTO
+            return new ProductDTO
             {
                 Id = product.Id,
                 Name = product.Name,

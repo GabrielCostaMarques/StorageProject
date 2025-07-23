@@ -11,13 +11,14 @@ namespace StorageProject.Application.DTOs.Product
         [MaxLength(250, ErrorMessage = "The field {1} must have a maximum of 250 characters")]
         public string? Description { get; init; }
 
+        [Required(ErrorMessage = "The field {3} must be filled")]
         [Range(0, int.MaxValue)]
         public int Quantity { get; init; }
 
-        [Required(ErrorMessage = "The field {3} must be filled")]
+        [Required(ErrorMessage = "The field {4} must be filled")]
         public Guid BrandId { get; init; }
 
-        [Required(ErrorMessage = "The field {3} must be filled")]
+        [Required(ErrorMessage = "The field {5} must be filled")]
         public Guid CategoryId { get; init; }
     }
 }

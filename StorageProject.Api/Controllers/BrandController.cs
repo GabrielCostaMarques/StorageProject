@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Ardalis.Result;
+using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Brand;
 
@@ -28,19 +29,30 @@ namespace StorageProject.Api.Controllers
             return Ok(brand);
         }
 
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var brand = await _brandService.GetByIdAsync(id);
+            if (brand.IsError())
+            {
+                return NotFound(brand.Errors);
+            }
+            return Ok(brand);
+        }
+
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] BrandDTO brandDTO)
+        public async Task<IActionResult> Create([FromBody] CreateBrandDTO createBrandDTO)
         {
-            var brand = await _brandService.CreateAsync(brandDTO);
+            var brand = await _brandService.CreateAsync(createBrandDTO);
             return Ok(brand);
         }
 
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateBrandDTO changeBrandDTO)
+        public async Task<IActionResult> Update([FromBody] UpdateBrandDTO updateBrandDTO)
         {
-            var updatedBrand = await _brandService.UpdateAsync(changeBrandDTO);
+            var updatedBrand = await _brandService.UpdateAsync(updateBrandDTO);
             return Ok(updatedBrand);
         }
 

@@ -8,9 +8,9 @@ namespace StorageProject.Application.Contracts
     {
 
         public Task<IEnumerable<Category>> GetAllAsync();
-        public Task<CategoryDTO> GetByIdAsync(Guid id);
+        public Task<Result<CategoryDTO>> GetByIdAsync(Guid id);
         public Task<Result> CreateAsync(CategoryDTO categoryDTO);
-        public Task<Result> UpdateAsync(CategoryDTO categoryDTO);
+        public Task<Result> UpdateAsync(UpdateCategoryDTO updateCategoryDTO);
         public Task<Result> RemoveAsync(Guid id);
     }
 }

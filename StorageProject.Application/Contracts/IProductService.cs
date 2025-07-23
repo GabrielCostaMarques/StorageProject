@@ -10,10 +10,10 @@ namespace StorageProject.Application.Contracts
             throw new NotImplementedException();
         }
 
-        Task<Result<IEnumerable<ProductResponseDTO>>> GetAllAsync();
-        Task<Result<ProductResponseDTO>> GetByIdAsync(Guid id);
-        Task<Result<ProductResponseDTO>> CreateAsync(CreateProductDTO createProductDTO);
-        Task<Result<ProductResponseDTO>> UpdateAsync(UpdateProductDTO changeProductDTO);
+        Task<Result<IEnumerable<ProductDTO>>> GetAllAsync();
+        Task<Result<ProductDTO>> GetByIdAsync(Guid id);
+        Task<Result<ProductDTO>> CreateAsync(CreateProductDTO createProductDTO);
+        Task<Result<ProductDTO>> UpdateAsync(UpdateProductDTO changeProductDTO);
         Task<Result> RemoveAsync(Guid id);
     }
 }
