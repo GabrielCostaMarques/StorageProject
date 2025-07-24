@@ -9,12 +9,13 @@ namespace StorageProject.Application.Mappers
         {
             return new CategoryDTO
             {
+                Id = category.Id,
                 Name = category.Name,
                 Description = category.Description
 
             };
         }
-        public static Category ToEntity(this CategoryDTO dto)
+        public static Category ToEntity(this CreateCategoryDTO dto)
         {
             return new Category
             {

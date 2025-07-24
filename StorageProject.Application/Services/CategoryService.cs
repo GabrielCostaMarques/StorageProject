@@ -16,9 +16,9 @@ namespace StorageProject.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> CreateAsync(CategoryDTO categoryDTO)
+        public async Task<Result> CreateAsync(CreateCategoryDTO createCategoryDTO)
         {
-            var entity = categoryDTO.ToEntity();
+            var entity = createCategoryDTO.ToEntity();
             if (!entity.Name.Any())
             {
                 return Result.Conflict("Category name cannot be empty.");
@@ -29,9 +29,11 @@ namespace StorageProject.Application.Services
             return Result.SuccessWithMessage("Category created successfully.");
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync()
+        public async Task<IEnumerable<CategoryDTO>> GetAllAsync()
         {
-            return await _unitOfWork.CategoryRepository.GetAll();
+           var entity = await _unitOfWork.CategoryRepository.GetAll();
+
+           return entity.Select(c =>c.ToDTO());
         }
 
         public async Task<Result<CategoryDTO>> GetByIdAsync(Guid id)

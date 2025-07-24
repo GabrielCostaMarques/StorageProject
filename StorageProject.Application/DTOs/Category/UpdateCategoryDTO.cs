@@ -1,6 +1,6 @@
 ﻿namespace StorageProject.Application.DTOs.Category
 {
-    public record UpdateCategoryDTO : CategoryDTO
+    public record UpdateCategoryDTO : CreateCategoryDTO
     {
         public Guid Id { get; init; }
     }

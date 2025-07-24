@@ -7,9 +7,9 @@ namespace StorageProject.Application.Contracts
     public interface ICategoryService
     {
 
-        public Task<IEnumerable<Category>> GetAllAsync();
+        public Task<IEnumerable<CategoryDTO>> GetAllAsync();
         public Task<Result<CategoryDTO>> GetByIdAsync(Guid id);
-        public Task<Result> CreateAsync(CategoryDTO categoryDTO);
+        public Task<Result> CreateAsync(CreateCategoryDTO createCategoryDTO);
         public Task<Result> UpdateAsync(UpdateCategoryDTO updateCategoryDTO);
         public Task<Result> RemoveAsync(Guid id);
     }

@@ -44,6 +44,11 @@ namespace StorageProject.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBrandDTO createBrandDTO)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var brand = await _brandService.CreateAsync(createBrandDTO);
             return Ok(brand);
         }

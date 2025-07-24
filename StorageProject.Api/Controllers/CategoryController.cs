@@ -32,9 +32,9 @@ namespace StorageProject.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CategoryDTO categoryDTO)
+        public async Task<IActionResult> Create([FromBody] CreateCategoryDTO createCategoryDTO)
         {
-            var category = await _categoryService.CreateAsync(categoryDTO);
+            var category = await _categoryService.CreateAsync(createCategoryDTO);
             return Ok(category);
         }
 
