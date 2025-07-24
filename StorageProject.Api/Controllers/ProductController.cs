@@ -8,7 +8,7 @@ namespace StorageProject.Api.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    public class ProductController : Controller
+    public class ProductController : ControllerBase
     {
         
         private readonly IProductService _productService;

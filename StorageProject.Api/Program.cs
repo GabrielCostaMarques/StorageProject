@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.Services;
@@ -13,8 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers()
-                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,9 +32,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<BrandValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
+
 
 var app = builder.Build();
 
