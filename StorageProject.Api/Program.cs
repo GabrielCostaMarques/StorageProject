@@ -1,7 +1,8 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using StorageProject.Application.Contracts;
+using StorageProject.Application.DTOs.Brand;
+using StorageProject.Application.DTOs.Product;
 using StorageProject.Application.Services;
 using StorageProject.Application.Validators;
 using StorageProject.Domain.Contracts;

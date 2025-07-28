@@ -1,7 +1,10 @@
 ﻿using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Brand;
+using StorageProject.Application.Validators;
 
 namespace StorageProject.Api.Controllers
 {
@@ -10,21 +13,20 @@ namespace StorageProject.Api.Controllers
     public class BrandController : Controller
     {
         private readonly IBrandService _brandService;
+        private readonly BrandValidator _brandValidator;
 
-        public BrandController(IBrandService brandService)
+
+        public BrandController(IBrandService brandService, BrandValidator brandValidator)
         {
             _brandService = brandService;
+            _brandValidator = brandValidator;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var brand = await _brandService.GetAllAsync();
 
-            if (!brand.Any())
-            {
-                return NotFound();
-            }
+            var brand = await _brandService.GetAllAsync();
 
             return Ok(brand);
         }
@@ -44,13 +46,25 @@ namespace StorageProject.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBrandDTO createBrandDTO)
         {
-            if(!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
+                var brandValidator = await _brandValidator.ValidateAsync(createBrandDTO);
 
-            var brand = await _brandService.CreateAsync(createBrandDTO);
-            return Ok(brand);
+                if (!brandValidator.IsValid)
+                    return BadRequest(brandValidator.Errors);
+                
+               var brand = await _brandService.CreateAsync(createBrandDTO);
+
+                if (brand.IsConflict())
+                    return Conflict(brand);
+
+                //more documentation and 201 HTTP code
+                return Created(string.Empty,brand);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500,new { Message = ex.Message });
+            }
         }
 
 
