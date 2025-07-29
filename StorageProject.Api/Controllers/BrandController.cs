@@ -51,19 +51,20 @@ namespace StorageProject.Api.Controllers
                 var brandValidator = await _brandValidator.ValidateAsync(createBrandDTO);
 
                 if (!brandValidator.IsValid)
-                    return BadRequest(brandValidator.Errors);
-                
-               var brand = await _brandService.CreateAsync(createBrandDTO);
+                    return BadRequest(brandValidator.ToDictionary());
 
-                if (brand.IsConflict())
-                    return Conflict(brand);
+                var result = await _brandService.CreateAsync(createBrandDTO);
 
-                //more documentation and 201 HTTP code
-                return Created(string.Empty,brand);
+                if (result.IsConflict())
+                    return Conflict(result);
+                if (!result.IsSuccess)
+                    return BadRequest(result);
+
+                return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500,new { Message = ex.Message });
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
             }
         }
 

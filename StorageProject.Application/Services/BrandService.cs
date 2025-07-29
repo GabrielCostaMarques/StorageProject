@@ -45,7 +45,7 @@ namespace StorageProject.Application.Services
 
             await _unitOfWork.CommitAsync();
 
-            return Result.SuccessWithMessage("Brand created");
+            return Result.Success(brand.ToDTO(),"Brand Created");
         }
 
         public async Task<Result> UpdateAsync(UpdateBrandDTO updateBrandDTO)
