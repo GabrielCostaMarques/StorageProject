@@ -3,7 +3,6 @@ using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Category;
 using StorageProject.Application.Mappers;
 using StorageProject.Domain.Contracts;
-using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Services
 {
@@ -16,63 +15,76 @@ namespace StorageProject.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> CreateAsync(CreateCategoryDTO createCategoryDTO)
+        public async Task<Result<List<CategoryDTO>>> GetAllAsync()
         {
-            var entity = createCategoryDTO.ToEntity();
-            if (!entity.Name.Any())
-            {
-                return Result.Conflict("Category name cannot be empty.");
-            }
-            var category = await _unitOfWork.CategoryRepository.Create(entity);
+            var entity = await _unitOfWork.CategoryRepository.GetAll();
 
-            await _unitOfWork.CommitAsync();
-            return Result.SuccessWithMessage("Category created successfully.");
-        }
+            if (entity == null || !entity.Any())
+                return Result<List<CategoryDTO>>.NotFound("No categories found.");
 
-        public async Task<IEnumerable<CategoryDTO>> GetAllAsync()
-        {
-           var entity = await _unitOfWork.CategoryRepository.GetAll();
-
-           return entity.Select(c =>c.ToDTO());
+            return Result.Success(entity.Select(b => b.ToDTO()).ToList());
         }
 
         public async Task<Result<CategoryDTO>> GetByIdAsync(Guid id)
         {
-            var entity = await _unitOfWork.CategoryRepository.GetById(id);
-            if (entity == null)
-            {
-                return Result.NotFound("Category not found");
-            }
+            if (id == Guid.Empty)
+                return Result.Error("Invalid category ID provided.");
 
-            return entity.ToDTO();
+            var entity = await _unitOfWork.CategoryRepository.GetById(id);
+
+            if (entity == null)
+                return Result.NotFound("Category not found");
+
+            return Result.Success(entity.ToDTO());
         }
 
-        public async Task<Result> RemoveAsync(Guid id)
+        public async Task<Result<CategoryDTO>> CreateAsync(CreateCategoryDTO createCategoryDTO)
         {
-            var entity = await _unitOfWork.CategoryRepository.GetById(id);
-            if (entity == null)
-            {
-                return Result.NotFound("Category not found");
+            var entity = createCategoryDTO.ToEntity();
 
-            }
+            var existingCategory = await _unitOfWork.CategoryRepository.GetByNameAsync(entity.Name);
 
-            _unitOfWork.CategoryRepository.Delete(entity);
+            if (existingCategory != null)
+                return Result.Conflict($"Category with the name {existingCategory.Name} already exists.");
+
+
+            var result = await _unitOfWork.CategoryRepository.Create(entity);
+
             await _unitOfWork.CommitAsync();
-            return Result.SuccessWithMessage("Category removed successfully.");
+
+            return Result.Success(result.ToDTO(), "Category Created");
         }
 
         public async Task<Result> UpdateAsync(UpdateCategoryDTO updateCategoryDTO)
         {
             var entity = await _unitOfWork.CategoryRepository.GetById(updateCategoryDTO.Id);
+            var existingCategory = await _unitOfWork.CategoryRepository.GetByNameAsync(entity.Name);
 
-            if (entity == null)
-            {
-                return Result.NotFound("Category not found");
-            }
+            if (existingCategory != null)
+                return Result.Conflict($"Category with the name {existingCategory.Name} already exists.");
+
             updateCategoryDTO.ToEntity(entity);
+
             await _unitOfWork.CommitAsync();
+
             return Result.SuccessWithMessage("Category updated successfully.");
 
         }
+
+        public async Task<Result> RemoveAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+                return Result.Error("Invalid category ID provided.");
+
+            var entity = await _unitOfWork.CategoryRepository.GetById(id);
+
+            if (entity == null)
+                return Result.NotFound("Category not found");
+
+            _unitOfWork.CategoryRepository.Delete(entity);
+            await _unitOfWork.CommitAsync();
+            return Result.SuccessWithMessage("Category deleted successfully.");
+        }
+
     }
 }

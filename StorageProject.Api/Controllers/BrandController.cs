@@ -1,5 +1,4 @@
 ﻿using Ardalis.Result;
-using FluentValidation.Validators;
 using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Brand;
@@ -47,12 +46,12 @@ namespace StorageProject.Api.Controllers
         {
             try
             {
-                var brand = await _brandService.GetByIdAsync(id);
-                if (brand.IsError())
+                var result = await _brandService.GetByIdAsync(id);
+                if (result.IsError())
                 {
-                    return NotFound(brand.Errors);
+                    return NotFound(result.Errors);
                 }
-                return Ok(brand);
+                return Ok(result);
             }
             catch (Exception)
             {

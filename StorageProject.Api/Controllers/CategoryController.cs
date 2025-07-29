@@ -1,7 +1,10 @@
 ﻿using Ardalis.Result;
 using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
+using StorageProject.Application.DTOs.Brand;
 using StorageProject.Application.DTOs.Category;
+using StorageProject.Application.Services;
+using StorageProject.Application.Validators;
 
 namespace StorageProject.Api.Controllers
 {
@@ -11,64 +14,133 @@ namespace StorageProject.Api.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
+        private readonly CategoryValidator _categoryValidator;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, CategoryValidator categoryValidator)
         {
             _categoryService = categoryService;
+            _categoryValidator = categoryValidator;
         }
 
 
+
+        #region Get
         [HttpGet]
+        [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get()
         {
-            var category = await _categoryService.GetAllAsync();
+            var result = await _categoryService.GetAllAsync();
 
-            if (!category.Any())
-            {
-                return NotFound();
-            }
+            if (!result.IsSuccess)
+                return NotFound(result);
 
-            return Ok(category);
+            return Ok(result);
         }
+        #endregion
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateCategoryDTO createCategoryDTO)
-        {
-            var category = await _categoryService.CreateAsync(createCategoryDTO);
-            return Ok(category);
-        }
 
-        [HttpGet("{id}")]
+        #region GetByID
+        [HttpGet("{id:Guid}")]
+        [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var category = await _categoryService.GetByIdAsync(id);
-            if (category.IsError())
+            try
             {
-                return NotFound(category.Errors);
+                var result = await _categoryService.GetByIdAsync(id);
+                if (result.IsError())
+                {
+                    return NotFound(result.Errors);
+                }
+                return Ok(result);
             }
-            return Ok(category);
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
         }
+        #endregion
 
+
+        #region Create   
+        [HttpPost]
+        [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Create([FromBody] CreateCategoryDTO createCategoryDTO)
+        {
+            try
+            {
+                var categoryValidator = await _categoryValidator.ValidateAsync(createCategoryDTO);
+
+                if (!categoryValidator.IsValid)
+                    return BadRequest(categoryValidator.ToDictionary());
+
+                var result = await _categoryService.CreateAsync(createCategoryDTO);
+
+                if (result.IsConflict())
+                    return Conflict(result);
+                if (!result.IsSuccess)
+                    return BadRequest(result);
+
+                return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
+        }
+        #endregion
+
+
+        #region Update
         [HttpPut]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update([FromBody] UpdateCategoryDTO updateCategoryDTO)
         {
-            var result = await _categoryService.UpdateAsync(updateCategoryDTO);
-            if (result.IsError())
+            try
             {
-                return NotFound(result.Errors);
-            }
-            return Ok(result);
-        }
+                var categoryValidator = await _categoryValidator.ValidateAsync(updateCategoryDTO);
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Remove(Guid id)
+                if (!categoryValidator.IsValid)
+                    return BadRequest(categoryValidator.ToDictionary());
+
+                var result = await _categoryService.UpdateAsync(updateCategoryDTO);
+
+                if (result.IsConflict())
+                    return Conflict(result);
+                if (!result.IsSuccess)
+                    return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
+
+        }
+        #endregion
+
+
+        #region Delete
+        [HttpDelete("{id:Guid}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _categoryService.RemoveAsync(id);
-            if (result.IsError())
+            if (!result.IsSuccess)
             {
                 return NotFound(result.Errors);
             }
             return Ok(result);
         }
+        #endregion
     }
 }
