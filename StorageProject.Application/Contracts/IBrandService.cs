@@ -7,7 +7,7 @@ namespace StorageProject.Application.Contracts
     public interface IBrandService
     {
 
-        public Task<IEnumerable<BrandDTO>> GetAllAsync();
+        public Task<Result<List<BrandDTO>>> GetAllAsync();
         public Task<Result<BrandDTO>> GetByIdAsync(Guid id);
         public Task<Result<BrandDTO>> CreateAsync(CreateBrandDTO createBrandDTO);
         public Task<Result> UpdateAsync(UpdateBrandDTO changeBrandDTO);

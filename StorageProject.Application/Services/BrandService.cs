@@ -15,20 +15,27 @@ namespace StorageProject.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<BrandDTO>> GetAllAsync()
+        public async Task<Result<List<BrandDTO>>> GetAllAsync()
         {
             var entity = await _unitOfWork.BrandRepository.GetAll();
-            return entity.Select(b => b.ToDTO());
+
+            if (entity == null || !entity.Any())
+                return Result<List<BrandDTO>>.NotFound("No brands found.");
+            
+            return Result.Success(entity.Select(b => b.ToDTO()).ToList());
         }
 
         public async Task<Result<BrandDTO>> GetByIdAsync(Guid id)
         {
+            if (id == Guid.Empty)
+                return Result.Error("Invalid brand ID provided.");
+
             var entity = await _unitOfWork.BrandRepository.GetById(id);
+
             if (entity == null)
-            {
                 return Result.NotFound("Brand not found");
-            }
-            return entity.ToDTO();
+            
+            return Result.Success(entity.ToDTO());
         }
 
         public async Task<Result<BrandDTO>> CreateAsync(CreateBrandDTO createBrandDTO)
@@ -38,7 +45,7 @@ namespace StorageProject.Application.Services
             var existingBrand = await _unitOfWork.BrandRepository.GetByNameAsync(entity.Name);
             
             if(existingBrand != null)
-               return Result<BrandDTO>.Conflict($"Brand with the name {existingBrand.Name} already exists.");
+               return Result.Conflict($"Brand with the name {existingBrand.Name} already exists.");
             
 
             var brand = await _unitOfWork.BrandRepository.Create(entity);
@@ -52,6 +59,10 @@ namespace StorageProject.Application.Services
         {
 
             var entity = await _unitOfWork.BrandRepository.GetById(updateBrandDTO.Id);
+            var existingBrand = await _unitOfWork.BrandRepository.GetByNameAsync(entity.Name);
+
+            if (existingBrand != null)
+                return Result.Conflict($"Brand with the name {existingBrand.Name} already exists.");
 
             updateBrandDTO.ToEntity(entity);
 
@@ -62,7 +73,14 @@ namespace StorageProject.Application.Services
 
         public async Task<Result> RemoveAsync(Guid id)
         {
+            if (id == Guid.Empty)
+                return Result.Error("Invalid brand ID provided.");
+
             var entity = await _unitOfWork.BrandRepository.GetById(id);
+
+            if (entity == null)
+                return Result.NotFound("Brand not found");
+
             _unitOfWork.BrandRepository.Delete(entity);
             await _unitOfWork.CommitAsync();
             return Result.SuccessWithMessage("Brand deleted successfully.");
