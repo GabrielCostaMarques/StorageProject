@@ -44,14 +44,14 @@ namespace StorageProject.Api.Controllers
         [HttpGet("{id:Guid}")]
         [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
                 var result = await _categoryService.GetByIdAsync(id);
-                if (result.IsError())
+                if (!result.IsSuccess)
                 {
                     return NotFound(result.Errors);
                 }
@@ -132,6 +132,8 @@ namespace StorageProject.Api.Controllers
 
         #region Delete
         [HttpDelete("{id:Guid}")]
+        [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _categoryService.RemoveAsync(id);

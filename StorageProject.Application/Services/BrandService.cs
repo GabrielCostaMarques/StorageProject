@@ -20,7 +20,7 @@ namespace StorageProject.Application.Services
             var entity = await _unitOfWork.BrandRepository.GetAll();
 
             if (entity == null || !entity.Any())
-                return Result<List<BrandDTO>>.NotFound("No brands found.");
+                return Result.NotFound("No brands found.");
             
             return Result.Success(entity.Select(b => b.ToDTO()).ToList());
         }
@@ -59,12 +59,13 @@ namespace StorageProject.Application.Services
         {
 
             var entity = await _unitOfWork.BrandRepository.GetById(updateBrandDTO.Id);
+
+            updateBrandDTO.ToEntity(entity);
             var existingBrand = await _unitOfWork.BrandRepository.GetByNameAsync(entity.Name);
 
             if (existingBrand != null)
                 return Result.Conflict($"Brand with the name {existingBrand.Name} already exists.");
 
-            updateBrandDTO.ToEntity(entity);
 
             await _unitOfWork.CommitAsync();
 

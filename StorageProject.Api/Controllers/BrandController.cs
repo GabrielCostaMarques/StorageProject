@@ -23,7 +23,7 @@ namespace StorageProject.Api.Controllers
         #region Get
         [HttpGet]
         [ProducesResponseType(typeof(BrandDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get()
         {
             var result = await _brandService.GetAllAsync();
@@ -39,15 +39,15 @@ namespace StorageProject.Api.Controllers
         #region GetByID
         [HttpGet("{id:Guid}")]
         [ProducesResponseType(typeof(BrandDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
                 var result = await _brandService.GetByIdAsync(id);
-                if (result.IsError())
+                if (!result.IsSuccess)
                 {
                     return NotFound(result.Errors);
                 }
@@ -64,7 +64,7 @@ namespace StorageProject.Api.Controllers
         #region Create   
         [HttpPost]
         [ProducesResponseType(typeof(BrandDTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Dictionary<string,string>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] CreateBrandDTO createBrandDTO)
@@ -96,7 +96,7 @@ namespace StorageProject.Api.Controllers
         #region Update
         [HttpPut]
         [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update([FromBody] UpdateBrandDTO updateBrandDTO)
@@ -124,9 +124,11 @@ namespace StorageProject.Api.Controllers
 
         }
         #endregion
-
+        
         #region Delete
         [HttpDelete("{id:Guid}")]
+        [ProducesResponseType(typeof(BrandDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _brandService.RemoveAsync(id);

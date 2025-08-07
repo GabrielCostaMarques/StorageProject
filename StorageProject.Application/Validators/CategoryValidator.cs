@@ -11,7 +11,9 @@ namespace StorageProject.Application.Validators
                 .NotEmpty()
                 .WithMessage("Field Name is required")
                 .WithErrorCode("400")
-                .Length(3, 100);
+                .Length(3, 100)
+                .Matches(@"[a-zA-Z]")
+                .WithMessage("Field must contain at least one letter"); ;
         }
     
     

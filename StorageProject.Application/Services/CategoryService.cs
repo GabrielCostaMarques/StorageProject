@@ -58,12 +58,12 @@ namespace StorageProject.Application.Services
         public async Task<Result> UpdateAsync(UpdateCategoryDTO updateCategoryDTO)
         {
             var entity = await _unitOfWork.CategoryRepository.GetById(updateCategoryDTO.Id);
+            updateCategoryDTO.ToEntity(entity);
+
             var existingCategory = await _unitOfWork.CategoryRepository.GetByNameAsync(entity.Name);
 
             if (existingCategory != null)
                 return Result.Conflict($"Category with the name {existingCategory.Name} already exists.");
-
-            updateCategoryDTO.ToEntity(entity);
 
             await _unitOfWork.CommitAsync();
 
