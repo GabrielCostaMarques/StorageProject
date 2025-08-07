@@ -43,8 +43,8 @@ namespace StorageProject.Api.Controllers
         #region GetByID
         [HttpGet("{id:Guid}")]
         [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -68,7 +68,7 @@ namespace StorageProject.Api.Controllers
         #region Create   
         [HttpPost]
         [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] CreateCategoryDTO createCategoryDTO)
@@ -100,7 +100,7 @@ namespace StorageProject.Api.Controllers
         #region Update
         [HttpPut]
         [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update([FromBody] UpdateCategoryDTO updateCategoryDTO)
