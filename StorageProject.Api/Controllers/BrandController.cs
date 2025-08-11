@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Brand;
 using StorageProject.Application.Validators;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 
 namespace StorageProject.Api.Controllers
 {
@@ -11,19 +13,20 @@ namespace StorageProject.Api.Controllers
     public class BrandController : Controller
     {
         private readonly IBrandService _brandService;
-        private readonly BrandValidator _brandValidator;
+        private readonly BrandValidator _brandValidator = new BrandValidator();
 
 
-        public BrandController(IBrandService brandService, BrandValidator brandValidator)
+        public BrandController(IBrandService brandService)
         {
             _brandService = brandService;
-            _brandValidator = brandValidator;
         }
 
         #region Get
+        [SwaggerResponse((int)HttpStatusCode.OK,"Return all Brands")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound,"Brands Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for get all Brands")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpGet]
-        [ProducesResponseType(typeof(BrandDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get()
         {
             var result = await _brandService.GetAllAsync();
@@ -37,11 +40,11 @@ namespace StorageProject.Api.Controllers
 
 
         #region GetByID
+        [SwaggerResponse((int)HttpStatusCode.OK, "Return all Brands")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Brand Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Brand ID Error")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpGet("{id:Guid}")]
-        [ProducesResponseType(typeof(BrandDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
         {
             try
@@ -62,11 +65,11 @@ namespace StorageProject.Api.Controllers
 
 
         #region Create   
+        [SwaggerResponse((int)HttpStatusCode.OK, "Brand Created")]
+        [SwaggerResponse((int)HttpStatusCode.Conflict, "Brand already exist")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for create Brand")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpPost]
-        [ProducesResponseType(typeof(BrandDTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] CreateBrandDTO createBrandDTO)
         {
             try
@@ -94,11 +97,12 @@ namespace StorageProject.Api.Controllers
 
 
         #region Update
+        [SwaggerResponse((int)HttpStatusCode.OK, "Brand Updated")]
+        [SwaggerResponse((int)HttpStatusCode.Conflict, "Brand already exist")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Brand Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for update Brand")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpPut]
-        [ProducesResponseType(typeof(BrandDTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update([FromBody] UpdateBrandDTO updateBrandDTO)
         {
             try
@@ -126,9 +130,11 @@ namespace StorageProject.Api.Controllers
         #endregion
         
         #region Delete
+        [SwaggerResponse((int)HttpStatusCode.OK, "Brand Deleted")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for delete Brand")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Brand Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpDelete("{id:Guid}")]
-        [ProducesResponseType(typeof(BrandDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _brandService.RemoveAsync(id);

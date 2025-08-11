@@ -1,7 +1,12 @@
 ﻿using Ardalis.Result;
 using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
+using StorageProject.Application.DTOs.Category;
 using StorageProject.Application.DTOs.Product;
+using StorageProject.Application.Services;
+using StorageProject.Application.Validators;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 
 namespace StorageProject.Api.Controllers
 {
@@ -12,55 +17,127 @@ namespace StorageProject.Api.Controllers
     {
         
         private readonly IProductService _productService;
+        private readonly ProductValidator _productValidator;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, ProductValidator productValidator)
         {
             _productService = productService;
+            _productValidator = productValidator;
         }
 
+        #region Get
         [HttpGet]
-
-
         public async Task<IActionResult> Get()
         {
-            var product = await _productService.GetAllAsync();
+            var result = await _productService.GetAllAsync();
 
-            return  Ok(product);
+            if (!result.IsSuccess)
+                return NotFound(result);
+
+            return Ok(result);
         }
+        #endregion
 
+        #region GetByID
+        [SwaggerResponse((int)HttpStatusCode.OK, "Return Product")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Product Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Product ID Error")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var product = await _productService.GetByIdAsync(id);
-
-            if (product.IsNotFound())
+            try
             {
-                return NotFound(product);
+            var result = await _productService.GetByIdAsync(id);
+                if (!result.IsSuccess)
+                {
+                    return NotFound(result.Errors);
+                }
+                return Ok(result);
             }
-
-            return Ok(product);
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
         }
+        #endregion
 
+        #region Create
+        [SwaggerResponse((int)HttpStatusCode.OK, "Product Created")]
+        [SwaggerResponse((int)HttpStatusCode.Conflict, "Product already exist")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for create Product")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProductDTO createProductDTO)
         {
-            await _productService.CreateAsync(createProductDTO);
-            return Ok();
-        }
+            try
+            {
+                var productValidator = await _productValidator.ValidateAsync(createProductDTO);
 
+                if (!productValidator.IsValid)
+                    return BadRequest(productValidator.ToDictionary());
+
+                var result = await _productService.CreateAsync(createProductDTO);
+
+                if (result.IsConflict())
+                    return Conflict(result);
+                if (!result.IsSuccess)
+                    return BadRequest(result);
+
+                return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
+        }
+        #endregion
+
+        #region Update
+        [SwaggerResponse((int)HttpStatusCode.OK, "Product Updated")]
+        [SwaggerResponse((int)HttpStatusCode.Conflict, "Product already exist")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Product Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for update Product")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateProductDTO updateProductDTO)
         {
-            await _productService.UpdateAsync(updateProductDTO);
-            return Ok();
+            try
+            {
+                var productValidator = await _productValidator.ValidateAsync(updateProductDTO);
+
+                if (!productValidator.IsValid)
+                    return BadRequest(productValidator.ToDictionary());
+
+                var result = await _productService.UpdateAsync(updateProductDTO);
+
+                if (result.IsConflict())
+                    return Conflict(result);
+                if (!result.IsSuccess)
+                    return BadRequest(result);
+
+                return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
         }
+        #endregion
 
-
+        [SwaggerResponse((int)HttpStatusCode.OK, "Product Deleted")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for delete Product")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Product Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
-        {
-            await _productService.RemoveAsync(id);
-            return Ok();
+        {   
+            var result = await _productService.RemoveAsync(id);
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.Errors);
+            }
+            return Ok(result);
         }
     }
 }

@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using StorageProject.Api.Middlewares;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.Services;
 using StorageProject.Application.Validators;
@@ -18,8 +19,11 @@ builder.Services.AddControllers()
 builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddSwaggerGen(c =>
+{
+    c.EnableAnnotations();
+});
+    
 var connectionString = builder.Configuration.GetConnectionString("StorageContext");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -41,6 +45,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<LoggingMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -1,6 +1,5 @@
 ﻿using Ardalis.Result;
 using StorageProject.Application.DTOs.Brand;
-using StorageProject.Domain.Entity;
 
 namespace StorageProject.Application.Contracts
 {

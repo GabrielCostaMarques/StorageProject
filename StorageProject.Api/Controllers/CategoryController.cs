@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result;
 using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Brand;
 using StorageProject.Application.DTOs.Category;
-using StorageProject.Application.Services;
 using StorageProject.Application.Validators;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 
 namespace StorageProject.Api.Controllers
 {
@@ -25,9 +25,11 @@ namespace StorageProject.Api.Controllers
 
 
         #region Get
+        [SwaggerResponse((int)HttpStatusCode.OK, "Return all Categories")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Categories Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for get all Categories")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpGet]
-        [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get()
         {
             var result = await _categoryService.GetAllAsync();
@@ -41,11 +43,11 @@ namespace StorageProject.Api.Controllers
 
 
         #region GetByID
+        [SwaggerResponse((int)HttpStatusCode.OK, "Return Category")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Category Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Category ID Error")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpGet("{id:Guid}")]
-        [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
         {
             try
@@ -65,12 +67,12 @@ namespace StorageProject.Api.Controllers
         #endregion
 
 
-        #region Create   
+        #region Create
+        [SwaggerResponse((int)HttpStatusCode.OK, "Category Created")]
+        [SwaggerResponse((int)HttpStatusCode.Conflict, "Category already exist")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for create Category")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpPost]
-        [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] CreateCategoryDTO createCategoryDTO)
         {
             try
@@ -98,11 +100,12 @@ namespace StorageProject.Api.Controllers
 
 
         #region Update
+        [SwaggerResponse((int)HttpStatusCode.OK, "Category Updated")]
+        [SwaggerResponse((int)HttpStatusCode.Conflict, "Category already exist")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Category Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for update Category")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpPut]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status409Conflict)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update([FromBody] UpdateCategoryDTO updateCategoryDTO)
         {
             try
@@ -131,9 +134,11 @@ namespace StorageProject.Api.Controllers
 
 
         #region Delete
+        [SwaggerResponse((int)HttpStatusCode.OK, "Category Deleted")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for delete Category")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Category Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpDelete("{id:Guid}")]
-        [ProducesResponseType(typeof(CategoryDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _categoryService.RemoveAsync(id);
