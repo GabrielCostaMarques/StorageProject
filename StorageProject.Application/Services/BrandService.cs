@@ -45,20 +45,23 @@ namespace StorageProject.Application.Services
             var existingBrand = await _unitOfWork.BrandRepository.GetByNameAsync(entity.Name);
             
             if(existingBrand != null)
-               return Result.Conflict($"Brand with the name {existingBrand.Name} already exists.");
+               return Result.Conflict($"Brand with the name '{existingBrand.Name}' already exists.");
             
 
             var brand = await _unitOfWork.BrandRepository.Create(entity);
 
             await _unitOfWork.CommitAsync();
 
-            return Result.Success(brand.ToDTO(),"Brand Created");
+            return Result<BrandDTO>.Success(brand.ToDTO(),"Brand Created");
         }
 
         public async Task<Result> UpdateAsync(UpdateBrandDTO updateBrandDTO)
         {
 
             var entity = await _unitOfWork.BrandRepository.GetById(updateBrandDTO.Id);
+
+            if (entity is null)
+                return Result.NotFound("Brand Not Found");
 
             updateBrandDTO.ToEntity(entity);
             var existingBrand = await _unitOfWork.BrandRepository.GetByNameAsync(entity.Name);

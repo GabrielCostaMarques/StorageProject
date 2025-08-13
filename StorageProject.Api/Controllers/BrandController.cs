@@ -22,23 +22,29 @@ namespace StorageProject.Api.Controllers
         }
 
         #region Get
-        [SwaggerResponse((int)HttpStatusCode.OK,"Return all Brands")]
-        [SwaggerResponse((int)HttpStatusCode.NotFound,"Brands Not Found")]
-        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for get all Brands")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Return all Brands")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Brands Not Found")]
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _brandService.GetAllAsync();
+            try
+            {
+                var result = await _brandService.GetAllAsync();
 
-            if (!result.IsSuccess)
-                return NotFound(result);
+                if (!result.IsSuccess)
+                    return NotFound(result);
 
-            return Ok(result);
+                return Ok(result);
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
+            #endregion
+
         }
-        #endregion
-
-
         #region GetByID
         [SwaggerResponse((int)HttpStatusCode.OK, "Return all Brands")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Brand Not Found")]
@@ -116,8 +122,8 @@ namespace StorageProject.Api.Controllers
 
                 if (result.IsConflict())
                     return Conflict(result);
-                if (!result.IsSuccess)
-                    return BadRequest(result);
+                if (result.IsNotFound())
+                    return NotFound(result);
 
                 return Ok(result);
             }
@@ -128,22 +134,31 @@ namespace StorageProject.Api.Controllers
 
         }
         #endregion
-        
+
         #region Delete
         [SwaggerResponse((int)HttpStatusCode.OK, "Brand Deleted")]
-        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for delete Brand")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Brand Not Found")]
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _brandService.RemoveAsync(id);
-            if (!result.IsSuccess)
+            try
             {
-                return NotFound(result.Errors);
+                var result = await _brandService.RemoveAsync(id);
+                if (!result.IsSuccess)
+                {
+                    return NotFound(result.Errors);
+                }
+                return Ok(result);
+
             }
-            return Ok(result);
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
+
+            #endregion
         }
-        #endregion
     }
 }
+
