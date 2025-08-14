@@ -1,7 +1,6 @@
 ﻿using Ardalis.Result;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using StorageProject.Tests.BrandControllerTest.Extensions;
 
 namespace StorageProject.Tests.BrandControllerTest
 {

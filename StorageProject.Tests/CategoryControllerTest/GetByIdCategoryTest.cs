@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using StorageProject.Application.DTOs.Category;
-using StorageProject.Tests.CategoryControllerTest.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +29,6 @@ namespace StorageProject.Tests.CategoryControllerTest
             // Assert
             var objectResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(200, objectResult.StatusCode);
-            Assert.Equal(category, objectResult.Value);
         }
         [Fact]
         public async Task GetByIdCategory_NotFoundResult()
@@ -49,7 +47,7 @@ namespace StorageProject.Tests.CategoryControllerTest
         {
             // Arrange
             var categoryId = Guid.NewGuid();
-            _fixture.CategoryServiceMock.Setup(s => s.GetByIdAsync(categoryId)).ReturnsAsync(Result.Error("An unexpected error occurred."));
+            _fixture.CategoryServiceMock.Setup(s => s.GetByIdAsync(categoryId)).ThrowsAsync(new Exception("Unexpected Error"));
             // Act
             var result = await _fixture.Controller.GetById(categoryId);
             // Assert

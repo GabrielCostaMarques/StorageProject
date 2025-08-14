@@ -145,12 +145,20 @@ namespace StorageProject.Api.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _categoryService.RemoveAsync(id);
-            if (!result.IsSuccess)
+            try
             {
-                return NotFound(result.Errors);
+                var result = await _categoryService.RemoveAsync(id);
+                if (!result.IsSuccess)
+                {
+                    return NotFound(result.Errors);
+                }
+                return Ok(result);
+
             }
-            return Ok(result);
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An Unexpected Error" });
+            }
         }
         #endregion
     }

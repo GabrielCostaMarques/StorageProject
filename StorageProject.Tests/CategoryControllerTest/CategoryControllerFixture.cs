@@ -1,7 +1,7 @@
 ﻿using Moq;
 using StorageProject.Application.Contracts;
 using StorageProject.Api.Controllers;
-namespace StorageProject.Tests.CategoryControllerTest.Extensions
+namespace StorageProject.Tests.CategoryControllerTest
 {
     public class CategoryControllerFixture
     {

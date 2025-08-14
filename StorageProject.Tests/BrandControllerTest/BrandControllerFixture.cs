@@ -1,7 +1,7 @@
 ﻿using Moq;
 using StorageProject.Application.Contracts;
 using StorageProject.Api.Controllers;
-namespace StorageProject.Tests.BrandControllerTest.Extensions
+namespace StorageProject.Tests.BrandControllerTest
 {
     public class BrandControllerFixture
     {

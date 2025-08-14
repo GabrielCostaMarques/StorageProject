@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using StorageProject.Application.DTOs.Category;
-using StorageProject.Tests.CategoryControllerTest.Extensions;
 
 namespace StorageProject.Tests.CategoryControllerTest
 {

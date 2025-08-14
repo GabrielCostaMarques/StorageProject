@@ -21,7 +21,8 @@ namespace StorageProject.Application.Services
         {
             var products = await _unitOfWork.ProductRepository.GetAllWithIncludesAsync();
 
-            if (!products.Any()) return Result.SuccessWithMessage("Empty List");
+            if (!products.Any())
+                return Result.NotFound("Products NotFound");
             
             var dto = products.Select(product => product.ToDTO()).ToList();
 

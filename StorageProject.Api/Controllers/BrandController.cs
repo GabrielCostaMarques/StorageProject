@@ -32,7 +32,7 @@ namespace StorageProject.Api.Controllers
             {
                 var result = await _brandService.GetAllAsync();
 
-                if (!result.IsSuccess)
+                if (result.IsNotFound())
                     return NotFound(result);
 
                 return Ok(result);

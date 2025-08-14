@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using StorageProject.Application.DTOs.Brand;
-using StorageProject.Tests.BrandControllerTest.Extensions;
 
 namespace StorageProject.Tests.BrandControllerTest
 {

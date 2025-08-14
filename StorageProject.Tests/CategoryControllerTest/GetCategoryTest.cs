@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using StorageProject.Application.DTOs.Category;
-using StorageProject.Tests.CategoryControllerTest.Extensions;
 
 namespace StorageProject.Tests.CategoryControllerTest
 {
@@ -45,7 +44,7 @@ namespace StorageProject.Tests.CategoryControllerTest
         public async Task GetAllCategory_InternalServerErrorResult()
         {
             // Arrange
-            _fixture.CategoryServiceMock.Setup(s => s.GetAllAsync()).ReturnsAsync(Result.Error("An unexpected error occurred."));
+            _fixture.CategoryServiceMock.Setup(s => s.GetAllAsync()).ThrowsAsync(new Exception("Unexpected Error"));
             // Act
             var result = await _fixture.Controller.Get();
             // Assert
