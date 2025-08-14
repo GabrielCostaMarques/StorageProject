@@ -14,12 +14,11 @@ namespace StorageProject.Api.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
-        private readonly CategoryValidator _categoryValidator;
+        private readonly CategoryValidator _categoryValidator = new CategoryValidator();
 
-        public CategoryController(ICategoryService categoryService, CategoryValidator categoryValidator)
+        public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-            _categoryValidator = categoryValidator;
         }
 
 
@@ -27,17 +26,24 @@ namespace StorageProject.Api.Controllers
         #region Get
         [SwaggerResponse((int)HttpStatusCode.OK, "Return all Categories")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Categories Not Found")]
-        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for get all Categories")]
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _categoryService.GetAllAsync();
+            try
+            {
+                var result = await _categoryService.GetAllAsync();
 
-            if (!result.IsSuccess)
-                return NotFound(result);
+                if (result.IsNotFound())
+                    return NotFound(result);
 
-            return Ok(result);
+                return Ok(result);
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
         }
         #endregion
 
@@ -45,7 +51,6 @@ namespace StorageProject.Api.Controllers
         #region GetByID
         [SwaggerResponse((int)HttpStatusCode.OK, "Return Category")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Category Not Found")]
-        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Category ID Error")]
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetById(Guid id)
@@ -119,8 +124,8 @@ namespace StorageProject.Api.Controllers
 
                 if (result.IsConflict())
                     return Conflict(result);
-                if (!result.IsSuccess)
-                    return BadRequest(result);
+                if (result.IsNotFound())
+                    return NotFound(result);
 
                 return Ok(result);
             }
@@ -135,7 +140,6 @@ namespace StorageProject.Api.Controllers
 
         #region Delete
         [SwaggerResponse((int)HttpStatusCode.OK, "Category Deleted")]
-        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Error for delete Category")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Category Not Found")]
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpDelete("{id:Guid}")]

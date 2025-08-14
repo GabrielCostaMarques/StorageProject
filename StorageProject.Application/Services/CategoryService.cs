@@ -58,6 +58,9 @@ namespace StorageProject.Application.Services
         public async Task<Result> UpdateAsync(UpdateCategoryDTO updateCategoryDTO)
         {
             var entity = await _unitOfWork.CategoryRepository.GetById(updateCategoryDTO.Id);
+            if (entity is null)
+                return Result.NotFound("Category not found");
+
             updateCategoryDTO.ToEntity(entity);
 
             var existingCategory = await _unitOfWork.CategoryRepository.GetByNameAsync(entity.Name);
