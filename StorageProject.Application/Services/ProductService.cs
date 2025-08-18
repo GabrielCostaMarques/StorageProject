@@ -1,5 +1,4 @@
 ﻿using Ardalis.Result;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using StorageProject.Application.Contracts;
 using StorageProject.Application.DTOs.Product;
 using StorageProject.Application.Mappers;
@@ -45,7 +44,8 @@ namespace StorageProject.Application.Services
         {
             var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(id);
 
-            if (entity == null) return Result.NotFound("Not Found Product");
+            if (entity == null)
+                return Result.NotFound("Not Found Product");
 
             return Result<ProductDTO>.Success(entity.ToDTO());
         }
@@ -54,7 +54,8 @@ namespace StorageProject.Application.Services
         {
             var entity = await _unitOfWork.ProductRepository.GetByIdWithIncludesAsync(changeProductDTO.Id);
 
-            if (entity == null) return Result.NotFound("Not Found Product");
+            if (entity == null)
+                return Result.NotFound("Not Found Product");
 
             changeProductDTO.ToEntity(entity);
 
@@ -66,7 +67,8 @@ namespace StorageProject.Application.Services
         public async Task<Result> RemoveAsync(Guid id)
         {
             var product = await _unitOfWork.ProductRepository.GetById(id);
-            if (product is null) return Result.NotFound("Not Found Product");
+            if (product is null)
+                return Result.NotFound("Not Found Product");
 
             _unitOfWork.ProductRepository.Delete(product);
 

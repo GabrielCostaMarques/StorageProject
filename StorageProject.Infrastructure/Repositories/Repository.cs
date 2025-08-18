@@ -28,18 +28,7 @@ namespace StorageProject.Infrastructure.Repositories
             .Skip(skip)
             .Take(take)
             .ToListAsync(cancellationToken);
-
-        public async Task<IEnumerable<T>> GetAllWithIncludesAsync(int skip, int take, CancellationToken cancellationToken = default)
-        => await _dbSet
-                 .AsNoTracking()
-                 .Skip(skip)
-                 .Take(take)
-                 .ToListAsync(cancellationToken);
-
-        public async Task<T> GetByIdWithIncludesAsync(Guid id, CancellationToken cancellationToken = default)
-        => await _dbSet.FirstOrDefaultAsync(cancellationToken);
-        
-
+       
 
         public async Task<T> GetById(Guid id, CancellationToken cancellationToken = default)
         => await _dbSet.FirstOrDefaultAsync(e=>e.Id == id, cancellationToken);

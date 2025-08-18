@@ -17,20 +17,20 @@ namespace StorageProject.Infrastructure.Repositories
         public async Task<IEnumerable<Product>> GetAllWithIncludesAsync(int skip = 0, int take = 40, CancellationToken cancellationToken = default)
         {
             return await _context.Products
-                .Include(p => p.Brand)
-                .Include(p => p.Category)
-                .AsNoTracking()
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync(cancellationToken);
+                    .Include(p => p.Brand)
+                    .Include(p => p.Category)
+                    .AsNoTracking()
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync(cancellationToken)??Enumerable.Empty<Product>();
         }
 
-        public async Task<Product> GetByIdWithIncludesAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Product?> GetByIdWithIncludesAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _context.Products
                 .Include(p => p.Brand)
                 .Include(p => p.Category)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id,cancellationToken);
         }
     }
 }

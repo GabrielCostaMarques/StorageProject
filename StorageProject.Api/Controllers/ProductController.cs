@@ -1,9 +1,7 @@
 ﻿using Ardalis.Result;
 using Microsoft.AspNetCore.Mvc;
 using StorageProject.Application.Contracts;
-using StorageProject.Application.DTOs.Category;
 using StorageProject.Application.DTOs.Product;
-using StorageProject.Application.Services;
 using StorageProject.Application.Validators;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
@@ -15,26 +13,36 @@ namespace StorageProject.Api.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-        
-        private readonly IProductService _productService;
-        private readonly ProductValidator _productValidator;
 
-        public ProductController(IProductService productService, ProductValidator productValidator)
+        private readonly IProductService _productService;
+        private readonly ProductValidator _productValidator = new ProductValidator();
+
+        public ProductController(IProductService productService)
         {
             _productService = productService;
-            _productValidator = productValidator;
         }
 
         #region Get
+
+        [SwaggerResponse((int)HttpStatusCode.OK, "Return all Products")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Products Not Found")]
+        [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _productService.GetAllAsync();
+            try
+            {
+                var result = await _productService.GetAllAsync();
 
-            if (!result.IsSuccess)
-                return NotFound(result);
+                if (result.IsNotFound())
+                    return NotFound(result);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
         }
         #endregion
 
@@ -48,8 +56,8 @@ namespace StorageProject.Api.Controllers
         {
             try
             {
-            var result = await _productService.GetByIdAsync(id);
-                if (!result.IsSuccess)
+                var result = await _productService.GetByIdAsync(id);
+                if (result.IsNotFound())
                 {
                     return NotFound(result.Errors);
                 }
@@ -81,8 +89,6 @@ namespace StorageProject.Api.Controllers
 
                 if (result.IsConflict())
                     return Conflict(result);
-                if (!result.IsSuccess)
-                    return BadRequest(result);
 
                 return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result);
             }
@@ -131,13 +137,21 @@ namespace StorageProject.Api.Controllers
         [SwaggerResponse((int)HttpStatusCode.InternalServerError, "Unexpected Error")]
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id)
-        {   
-            var result = await _productService.RemoveAsync(id);
-            if (!result.IsSuccess)
+        {
+            try
             {
-                return NotFound(result.Errors);
+                var result = await _productService.RemoveAsync(id);
+                if (result.IsNotFound())
+                {
+                    return NotFound(result.Errors);
+                }
+                return Ok(result);
+
             }
-            return Ok(result);
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred." });
+            }
         }
     }
 }
